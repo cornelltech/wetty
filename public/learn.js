@@ -2,12 +2,24 @@
 
 
 $(document).ready(function(){
+  var currentFrame=0;  
   function getStatus() {
-    $.get("/status", {}, function(data){
-      $("#status").html("status is " + data);
+    $.get("/status" + currentFrame.toString(), {}, function(data){
+      $("#status").html(data);
     });
   }
-  
+  $("#next").click(function() {
+    currentFrame++;
+    $.get("/content/frame" + currentFrame.toString(), {}, function(data){
+      $("#content").html(data);
+    });
+  });
+  $("#prev").click(function() {
+    currentFrame--;
+    $.get("/content/frame" + currentFrame.toString(), {}, function(data){
+      $("#content").html(data);
+    });
+  });
   setInterval(getStatus, 1000);
 });
 

@@ -5,5 +5,6 @@ services:
     command: ["app.js", "-p", "3000"]
     volumes:
       - ./public:/app/public
+      - ./app.js:/app/app.js
     ports:
       - "3000:3000"

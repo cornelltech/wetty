@@ -73,6 +73,20 @@ process.on('uncaughtException', function(e) {
     console.error('Error: ' + e);
 });
 
+var frameContent = [
+  "frame0",
+  "frame1",
+  "frame2"];
+var statusOfFrame = [
+  function(req, res) {
+    fs.access('/home/term/temp', fs.constants.F_OK, (err) => {
+      res.send(err ? "not complete" : "complete");
+    });
+  },
+  function(req, res) {
+    res.send("frame 1 status");
+  }
+];
 var httpserv;
 
 var app = express();
@@ -80,14 +94,16 @@ app.get('/wetty/ssh/:user', function(req, res) {
     res.sendfile(__dirname + '/public/wetty/index.html');
 });
 app.use('/', express.static(path.join(__dirname, 'public')));
-app.get('/status', function(req, res) {
+
+app.get('/status:index', function(req, res) {
     //#exec('ls -la', function(error, stdout, stderr) {
     //#    res.send(stdout);
     //#});
-    fs.access('/home/term/temp', fs.constants.F_OK, (err) => {
-      res.send( err ? "not complete" : "complete" );
-    });
+    statusOfFrame[req.params["index"]](req, res);
 });    
+app.get('/content/frame:index', function(req, res) {
+  res.send(frameContent[req.params["index"]]);
+});
 
 if (runhttps) {
     httpserv = https.createServer(opts.ssl, app).listen(opts.port, function() {
