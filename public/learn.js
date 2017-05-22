@@ -6,6 +6,11 @@ $(document).ready(function(){
   function getStatus() {
     $.get("/status" + currentFrame.toString(), {}, function(data){
       $("#status").html(data);
+      if( data.indexOf("not") === -1){
+        $("#status").addClass("teal").removeClass("red");
+      }else{
+        $("#status").addClass("red").removeClass("teal");
+      }
     });
   }
   $("#next").click(function() {
@@ -21,6 +26,7 @@ $(document).ready(function(){
     });
   });
   setInterval(getStatus, 1000);
+  $("code").addClass("grey").addClass("lighten-2");
 });
 
 
