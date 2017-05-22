@@ -1,0 +1,9 @@
+version: '2'
+services:
+  web:
+    build: .
+    command: ["app.js", "-p", "3000"]
+    volumes:
+      - ./public:/app/public
+    ports:
+      - "3000:3000"

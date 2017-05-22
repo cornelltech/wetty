@@ -5,6 +5,7 @@ var path = require('path');
 var server = require('socket.io');
 var pty = require('pty.js');
 var fs = require('fs');
+var exec = require('child_process').exec;
 
 var opts = require('optimist')
     .options({
@@ -79,6 +80,14 @@ app.get('/wetty/ssh/:user', function(req, res) {
     res.sendfile(__dirname + '/public/wetty/index.html');
 });
 app.use('/', express.static(path.join(__dirname, 'public')));
+app.get('/status', function(req, res) {
+    //#exec('ls -la', function(error, stdout, stderr) {
+    //#    res.send(stdout);
+    //#});
+    fs.access('/home/term/temp', fs.constants.F_OK, (err) => {
+      res.send( err ? "not complete" : "complete" );
+    });
+});    
 
 if (runhttps) {
     httpserv = https.createServer(opts.ssl, app).listen(opts.port, function() {
