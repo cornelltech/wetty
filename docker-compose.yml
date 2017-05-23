@@ -2,9 +2,8 @@ version: '2'
 services:
   web:
     build: .
-    command: ["app.js", "-p", "3000"]
+    command: ["./start_app.sh"]
     volumes:
-      - ./public:/app/public
-      - ./app.js:/app/app.js
+      - .:/app
     ports:
       - "3000:3000"
