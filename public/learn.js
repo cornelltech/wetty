@@ -25,8 +25,11 @@ $(document).ready(function(){
       $("#content").html(data);
     });
   });
+
+  $.get("/content/frame" + currentFrame.toString(), {}, function(data){
+    $("#content").html(data);
+  });
   setInterval(getStatus, 1000);
-  $("code").addClass("grey").addClass("lighten-2");
 });
 
 
