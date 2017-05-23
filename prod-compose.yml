@@ -1,0 +1,10 @@
+version: '2'
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+  nginx:
+    build: ./compose/nginx
+    ports:
+      - "0.0.0.0:8000:80"
