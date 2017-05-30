@@ -1,6 +1,7 @@
 FROM node:7.10
 
-ADD . /app
+ADD ./ /app
+COPY ./chalenges/sample/frames.js /app/node/frames.js
 WORKDIR /app
 RUN apt-get update
 RUN apt-get install -y vim
