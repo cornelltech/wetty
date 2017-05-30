@@ -1,1 +1,1 @@
-/app/chalenges/rougue_process/frames.js
+/app/chalenges/sample/frames.js

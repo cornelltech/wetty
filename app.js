@@ -82,11 +82,17 @@ app.get('/wetty/ssh/:user', function(req, res) {
 });
 app.use('/', express.static(path.join(__dirname, 'public')));
 
-app.get('/status:index', function(req, res) {
-    frames.statusOfFrame[req.params["index"]](req, res);
+app.get('/status/:index', function(req, res) {
+  frames.responseArray[req.params["index"]]["statusFunction"](req, res);
 });    
-app.get('/content/frame:index', function(req, res) {
-  res.send(frames.frameContent[req.params["index"]]);
+app.get('/chat/:index', function(req, res) {
+  res.send({ 
+    chat: frames.responseArray[req.params["index"]]["chat"], 
+    questions: frames.responseArray[req.params['index']]["questions"].map((x) => { return x["prompt"]; })
+  });
+});
+app.get('/chat/:index/answer/:question', function(req, res) {
+  res.send(frames.responseArray[req.params["index"]]["questions"][req.params["question"]]["answer"]);
 });
 
 if (runhttps) {

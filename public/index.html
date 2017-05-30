@@ -27,35 +27,33 @@
         .container {
           height: 100vh;
         }
+        .chatBox {
+          height: 350px;
+        }
+        .chatDialog {
+          overflow: scroll;
+          height: 300px;
+        }
         .info{
           padding: 10px;
         }
         code {
           background-color: #e0e0e0;
         }
+        .userSays{
+          color: blue;
+        }
+        .serverSays{
+          color: green;
+        }
     </style>
 </head>
 
 <body>
-  <nav>
-    <div class="nav-wrapper">
-      <a href="#" class="brand-logo">Logo</a>
-      <ul id="nav-mobile" class="right hide-on-med-and-down">
-        <li>Welcome user Samson</li>
-        <li><a href="#">Rules</a></li>
-        <li><a href="#">About</a></li>
-      </ul>
-    </div>
-  </nav>
   <div class="container">
-    <div class="info">
-      <div id="content">
-      </div>
-      <div id="footer">
-        <div id="status" class="card-panel red lighten-4"></div>
-        <button id="prev">previous</button>
-        <button id="next">next</button>
-      </div>
+    <div class="chatBox">
+      <div class="chatDialog"></div>
+      <div class="chatButtons"></div>
     </div>
     <div id="terminal"></div>
   </div>

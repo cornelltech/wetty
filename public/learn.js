@@ -3,32 +3,55 @@
 
 $(document).ready(function(){
   var currentFrame=0;  
+  function getNextChat() {
+    $.get("/chat/" + currentFrame.toString(), {}, function(data){
+      theySay(data["chat"]);
+      $(".chatButtons").html("");
+      data["questions"].forEach((question, index) => { 
+        createButton(index, question);
+      });
+			activateButtons();
+    });
+
+  }
+  function createButton(index, question){
+    $(".chatButtons").append("<button class='question"+index+"'>" + question + "</button>");
+  }
+  function iSay(content){
+    $(".chatDialog").append("<div class='userSays'>Me: " + content + "</div>");
+    scrollToBottom();
+  }
+  function theySay(content){
+    $(".chatDialog").append("<div class='serverSays'>Them: " + content + "</div>");
+    scrollToBottom();
+  }
+  function scrollToBottom(){
+    $(".chatDialog").scrollTop($(".chatDialog").height());
+  }
+
+
+
   function getStatus() {
-    $.get("/status" + currentFrame.toString(), {}, function(data){
-      $("#status").html(data);
-      if( data.indexOf("not") === -1){
-        $("#status").addClass("teal").removeClass("red");
-      }else{
-        $("#status").addClass("red").removeClass("teal");
+    $.get("/status/" + currentFrame.toString(), {}, function(data){
+      if( data === "true" ){
+        currentFrame++;
+        getNextChat();
       }
     });
   }
-  $("#next").click(function() {
-    currentFrame++;
-    $.get("/content/frame" + currentFrame.toString(), {}, function(data){
-      $("#content").html(data);
+  function activateButtons(){
+    $("button").click(function() {
+      var regexp = /question(\d+)/
+      var questionNumber = $(this).attr("class").match(regexp)[1] 
+      iSay($(this).html());
+      $.get("/chat/" + currentFrame.toString() + "/answer/" + questionNumber, {}, function(data){
+        theySay(data);
+      });
+      $(this).hide();
     });
-  });
-  $("#prev").click(function() {
-    currentFrame--;
-    $.get("/content/frame" + currentFrame.toString(), {}, function(data){
-      $("#content").html(data);
-    });
-  });
+  }
 
-  $.get("/content/frame" + currentFrame.toString(), {}, function(data){
-    $("#content").html(data);
-  });
+  getNextChat();
   setInterval(getStatus, 1000);
 });
 
