@@ -1,1 +1,0 @@
-/app/chalenges/sample/frames.js
