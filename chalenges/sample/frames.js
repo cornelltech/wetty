@@ -6,7 +6,7 @@ module.exports = {
       chat: "Hello, welcome to the internet.  We will be using the terminal to explore the world of computers.  First we need to try to login.  Try logging in using the username <code>term</code> and the password <code>term</code>.", 
       questions: [
         { prompt: "But the password isn't typing in!", 
-          answer: "That's alright the letters that you're pressing are still getting sent.  And you can still use backspace if you make a mistake." },
+          answer: "That's alright, the letters that you're pressing are still getting sent.  And you can still use backspace if you make a mistake.  The system does this so that other people can't see how long your password is.  It's top secret!" },
         { prompt: "What is a username?",
           answer: "A username is the name that you will use.  So usually this might be your name or a name you made up.  But today it will just be <code>term</code>." },
         { prompt: "What is a password?",
@@ -44,11 +44,80 @@ module.exports = {
         { prompt: "I can't seem to print hello.",
           answer: "Try typing this in the terminal <code>echo hello</code>."},
         { prompt: "Why would we ever just want to print something?",
-          answer: "We'll see in a second what we can do with this." }
+          answer: "We'll see in a second what we can do with this." },
       ],
       statusFunction:
         function(req, res) {
-          res.send("false");
+          fs.readFile('/home/term/.bash_history', 'utf8', function(err, data) {
+            if(err){
+              res.send('false');
+            } else {
+              if(data.indexOf("echo hello") !== -1){
+                res.send("true");
+              } else {
+                res.send('false');
+              }
+            }
+          });
+        }
+    },
+    {
+      chat: "Now that we printed something we can use a special character to redirect the output from a program to a file.  The <code>&gt;</code> will redirect the output from a program to a file.<br><br>So let's try to print <code>hello</code> into our <code>temp</code> file.",
+      questions: [
+        { prompt: "How do I use the redirect?",
+          answer: "You must put the <code>&gt;</code> after the <code>echo hello</code> and then put the filename <code>temp</code> after the <code>&gt;</code>." },
+        { prompt: "I can't figure out how to do this!",
+          answer: "Try typing this in the console: <code>echo hello &gt; temp</code>" }
+      ],
+      statusFunction:
+        function(req, res) {
+          fs.readFile('/home/term/temp', 'utf8', function(err, data) {
+            if(err){
+              res.send("false");
+            } else {
+              if(data.indexOf("hello") === -1){
+                res.send("false");
+              } else {
+                res.send("true");
+              }
+            }
+          });
+        }
+    },
+    {
+      chat: "Once again you've done excelent work!!  Next we would like to read that file and see exactly what we wrote into it.  We use a program called <code>cat</code> to read a file.  See if you can figure out how to read this file back to us!",
+      questions: [
+        { prompt: "I can't figure out how to read it.",
+          answer: "Try using the command and then the filename." },
+        { prompt: "I really can't figure this out!",
+          answer: "Try typing this into the terminal: <code>cat temp</code>" }
+      ],
+      statusFunction:
+        function(req, res) {
+          fs.readFile('/home/term/.bash_history', 'utf8', function(err, data) {
+            if(err){
+              res.send('false');
+            } else {
+              if(data.indexOf("cat temp") !== -1){
+                res.send("true");
+              } else {
+                res.send('false');
+              }
+            }
+          });
+        }
+    },
+    {
+      chat: "Congratulations, you have completed the first chapter!",
+      questions: [
+        { prompt: "What do I do now?",
+          answer: "Now you must wait for us to build the next chapter." },
+        { prompt: "How can I find out more?",
+          answer: "you can't...yet." }
+      ],
+      statusFunction:
+        function(req, res) {
+          res.send('false');
         }
     }
   ]
