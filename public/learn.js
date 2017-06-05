@@ -36,7 +36,9 @@ $(document).ready(function(){
       var questionNumber = $(this).attr("class").match(regexp)[1] 
       iSay($(this).html());
       $.get("/chat/" + currentFrame.toString() + "/answer/" + questionNumber, {}, function(data){
-        theySay(data);
+        setTimeout(function() {
+          return theySay(data);
+        }, data.length*8);
       });
       $(this).hide();
     });
