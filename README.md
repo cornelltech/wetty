@@ -1,3 +1,7 @@
+## To start ##
+* clone the repo
+* run `./build_chalenge.sh sample`.
+
 Wetty = Web + tty
 -----------------
 
