@@ -20,4 +20,6 @@ The hacker was a little sloppy and left some traces behind.
 
 6. Terminate the process.
 
+You successfully completed your mission.
+
 
