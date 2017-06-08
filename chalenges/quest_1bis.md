@@ -3,7 +3,7 @@ This is a very important message.
 Some agents from the Capitol have infected the mainframe computer running the powerplant for all District 12 with a malware.
 The malware will most likely destroy some files, infect other machines and shuts down the power for all inhabitants of the District.
 
-According to our intelligence sources, we have less than 5 minutes desactivate the malware.
+According to our intelligence sources, we have less than 5 minutes to desactivate the malware.
 
 May the odds be ever in your favor!
 
