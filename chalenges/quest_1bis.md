@@ -17,7 +17,7 @@ Read the content of the file to find out the pid of the process running the malw
 
 Terminate the process using the kill command.
 
-The malware process is being run as a different user. You need to impersonate the user in order to terminate the process. To do so, you need the password the hacker used. Look for a file pwgen.txt.
+The malware process is being run as a different user. You need to impersonate the user in order to terminate the process. To do so, you need the password the agent used. Look for a file pwgen.txt.
 
 Impersonate the user.
 
