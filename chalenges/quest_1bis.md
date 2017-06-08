@@ -9,7 +9,7 @@ May the odds be ever in your favor!
 
 K@tniss.
 
-The agent working for the Capital was a little sloppy and left some traces behind.
+The agent working for the Capitol was a little sloppy and left some traces behind.
 
 From the current folder, look for a file named footsteps.txt.
 
