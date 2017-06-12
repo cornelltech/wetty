@@ -74,16 +74,18 @@ $(document).ready(function(){
       message.draw();
       return $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300);
   };
-  //sendMessage('Hello Philip! :)', 'left');
-  //setTimeout(function () {
-  //    return sendMessage('Hi Sandy! How are you?', 'right');
-  //}, 1000);
-  //return setTimeout(function () {
-  //    return sendMessage('I\'m fine, thank you!', 'left');
-  //}, 2000);
 
   getNextChat();
   setInterval(getStatus, 1000);
+
+  //code for quest1
+  function checkCountdown() {
+    $.get("/quest1/countdown", {}, function(data){
+      $(".status").html("<h1><small>countdown: </small>" + data + "</h1>");
+    });
+  }
+  setInterval(checkCountdown, 1000);
+
 });
 
 

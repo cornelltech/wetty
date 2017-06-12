@@ -95,6 +95,19 @@ app.get('/chat/:index/answer/:question', function(req, res) {
   res.send(frames.responseArray[req.params["index"]]["questions"][req.params["question"]]["answer"]);
 });
 
+//code for quest1
+
+app.get('/quest1/countdown', function(req, res) {
+  fs.readFile('/home/term/countdown.txt', 'utf8', function(err, data) {
+    if(err){
+      res.send('file read error!');
+    } else {
+      res.send(data);
+    }
+  });
+});    
+
+//end of code for quest1
 if (runhttps) {
     httpserv = https.createServer(opts.ssl, app).listen(opts.port, function() {
         console.log('https on port ' + opts.port);
