@@ -1,7 +1,9 @@
 var fs = require('fs');
 var exec = require('child_process').exec;
 module.exports = {
-  responseArray: [
+  endpoints: function(app){
+  },
+  steps: [
     { 
       chat: "Hello, welcome to the internet.  We will be using the terminal to explore the world of computers.  First we need to try to login.  Try logging in using the username <code>term</code> and the password <code>term</code>.", 
       questions: [
