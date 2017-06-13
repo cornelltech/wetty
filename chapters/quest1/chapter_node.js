@@ -1,7 +1,18 @@
 var fs = require('fs');
 var exec = require('child_process').exec;
 module.exports = {
-  responseArray: [
+  endpoints: function(app){
+    app.get('/quest1/countdown', function(req, res) {
+      fs.readFile('/home/term/countdown.txt', 'utf8', function(err, data) {
+        if(err){
+          res.send('file read error!');
+        } else {
+          res.send(data);
+        }
+      });
+    });
+  },
+  steps: [
     { 
       chat: "Hello Katniss.  There is an emergency and we need your help!  Some agents from the Capitol have infected the mainframe computer running the powerplant for all District 12 with a malware. The malware will most likely destroy some files, infect other machines and shuts down the power for all inhabitants of the District.<br><br>According to our intelligence sources, we have less than 5 minutes to deactivate the malware.<br><br>May the odds be ever in your favor!<br><br>Thankfully the agent working for the Capitol was a little sloppy and left some traces behind.  They left some files behind.  Let's see if we can find the footsteps.txt file.  First let's list the files in our current directory with <code>ls</code>.", 
       questions: [

@@ -6,7 +6,7 @@ var server = require('socket.io');
 var pty = require('pty.js');
 var fs = require('fs');
 var exec = require('child_process').exec;
-var frames = require('./node/frames');
+var chapter = require('./chapter_node');
 
 var opts = require('optimist')
     .options({
@@ -83,31 +83,22 @@ app.get('/wetty/ssh/:user', function(req, res) {
 app.use('/', express.static(path.join(__dirname, 'public')));
 
 app.get('/status/:index', function(req, res) {
-  frames.responseArray[req.params["index"]]["statusFunction"](req, res);
+  chapter.steps[req.params["index"]]["statusFunction"](req, res);
 });    
 app.get('/chat/:index', function(req, res) {
   res.send({ 
-    chat: frames.responseArray[req.params["index"]]["chat"], 
-    questions: frames.responseArray[req.params['index']]["questions"].map((x) => { return x["prompt"]; })
+    chat: chapter.steps[req.params["index"]]["chat"], 
+    questions: chapter.steps[req.params['index']]["questions"].map((x) => { return x["prompt"]; })
   });
 });
 app.get('/chat/:index/answer/:question', function(req, res) {
-  res.send(frames.responseArray[req.params["index"]]["questions"][req.params["question"]]["answer"]);
+  res.send(chapter.steps[req.params["index"]]["questions"][req.params["question"]]["answer"]);
 });
 
-//code for quest1
+// add any endpoints that this chapter might have
+chapter.endpoints(app);
 
-app.get('/quest1/countdown', function(req, res) {
-  fs.readFile('/home/term/countdown.txt', 'utf8', function(err, data) {
-    if(err){
-      res.send('file read error!');
-    } else {
-      res.send(data);
-    }
-  });
-});    
 
-//end of code for quest1
 if (runhttps) {
     httpserv = https.createServer(opts.ssl, app).listen(opts.port, function() {
         console.log('https on port ' + opts.port);

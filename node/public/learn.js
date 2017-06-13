@@ -1,6 +1,5 @@
 //var socket = io(location.origin, {path: '/learn/socket.io'})
 
-
 $(document).ready(function(){
   var currentFrame=0;  
   function getNextChat() {
@@ -78,13 +77,8 @@ $(document).ready(function(){
   getNextChat();
   setInterval(getStatus, 1000);
 
-  //code for quest1
-  function checkCountdown() {
-    $.get("/quest1/countdown", {}, function(data){
-      $(".status").html("<h1><small>countdown: </small>" + data + "</h1>");
-    });
-  }
-  setInterval(checkCountdown, 1000);
+  $.getScript('chapter_frontend.js', function() {
+  });
 
 });
 

@@ -2,4 +2,4 @@
 
 
 npm install nodemon -g
-nodemon app.js -p 3000
+nodemon node/app.js -p 3000
