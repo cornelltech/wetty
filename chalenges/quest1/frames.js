@@ -3,20 +3,41 @@ var exec = require('child_process').exec;
 module.exports = {
   responseArray: [
     { 
-      chat: "Hello Katniss.  There is an emergency and we need your help!  Some agents from the Capitol have infected the mainframe computer running the powerplant for all District 12 with a malware. The malware will most likely destroy some files, infect other machines and shuts down the power for all inhabitants of the District.<br><br>According to our intelligence sources, we have less than 5 minutes to deactivate the malware.<br><br>May the odds be ever in your favor!<br><br>Thankfully the agent working for the Capitol was a little sloppy and left some traces behind.  From the current folder, look for a file named footsteps.txt and read it.", 
+      chat: "Hello Katniss.  There is an emergency and we need your help!  Some agents from the Capitol have infected the mainframe computer running the powerplant for all District 12 with a malware. The malware will most likely destroy some files, infect other machines and shuts down the power for all inhabitants of the District.<br><br>According to our intelligence sources, we have less than 5 minutes to deactivate the malware.<br><br>May the odds be ever in your favor!<br><br>Thankfully the agent working for the Capitol was a little sloppy and left some traces behind.  They left some files behind.  Let's see if we can find the footsteps.txt file.  First let's list the files in our current directory with <code>ls</code>.", 
       questions: [
-        { prompt: "How do I read a file?", 
-          answer: "You can use a program called <code>cat</code> to read a file.  Try <code>cat footsteps.txt</code>." },
-        { prompt: "How do I login?",
-          answer: "You should log in with username and password of <code>term</code>." }
-      ], 
+        { prompt: "What is a directory?",
+          answer: "A directory contains files and/or directories.  Similar to how a file is a container for data, a directory is a container for files.  Directories make it easier to organize our files." },
+        { prompt: "What is a directory structure?",
+          answer: "A directory structure is the layout of directories to organize our files" }
+      ],
+      statusFunction:
+        function(req, res) {
+          fs.readFile('/home/term/.bash_history', 'utf8', function(err, data) {
+            if(err){
+              res.send('false');
+            } else {
+              if(data.indexOf("ls") !== -1){
+                res.send('true');
+              } else {
+                res.send('false');
+              }
+            }
+          });
+        }
+    },
+    {
+      chat:  "Great, now we know how to list files in our current directory.  But what about listing files in other directories?  We can simply run <code>ls</code> with the directory.  So let's try to list the files in the <code>files</code> directory.",
+      questions: [
+        { prompt: "I can't seem to list the files in the files directory.",
+          answer: "Try running this command <code>ls files</code>" }
+      ],
       statusFunction: 
         function(req, res) {
           fs.readFile('/home/term/.bash_history', 'utf8', function(err, data) {
             if(err){
               res.send('false');
             } else {
-              if(data.indexOf("cat footsteps.txt") !== -1){
+              if(data.indexOf("ls files") !== -1){
                 res.send("true");
               } else {
                 res.send('false');
@@ -26,7 +47,28 @@ module.exports = {
         }
     },
     {
-      chat: "Great work!!  Our sources told us that they left the command they ran in that file.  But in order to stop the process we need the PID or process ID.  Every process on this mainframe has an ID and we need to find the ID of this one.  Let's list the processes that are running and see if we can find the process.  To list the current processes run this command <code>ps -ef</code>.",
+      chat: "Ok, now we should be able to find the file <code>footsteps.txt</code>.  Now we need to print it out, but it's in a different directory so we need to tell the <code>cat</code> program where it is.  We do this by giving it the directory and filename separated by <code>/</code>.  So the path from our curent directory would be <code>files/footsteps.txt</code>.  Now try to read that file.",
+      questions: [
+        { prompt: "How do I read a file?", 
+          answer: "You can use a program called <code>cat</code> to read a file.  Try <code>cat files/footsteps.txt</code>." }
+      ], 
+      statusFunction: 
+        function(req, res) {
+          fs.readFile('/home/term/.bash_history', 'utf8', function(err, data) {
+            if(err){
+              res.send('false');
+            } else {
+              if(data.indexOf("cat files/footsteps.txt") !== -1){
+                res.send("true");
+              } else {
+                res.send('false');
+              }
+            }
+          });
+        }
+    },
+    {
+      chat: "Great work!!  Our sources told us that they left the command they ran in that file.  But in order to stop the process we need the PID or process ID.  Every process on this mainframe has an ID and we need to find the ID of this one.  Let's list the processes that are running and see if we can find the process.  To list the current processes run this command <code>ps -U term</code>.",
       questions: [
         { prompt: "What is a process?",
           answer: "A process is a running program.  On a phone a process might be an app you have installed or is running.  On this system an example is everytime you run a command, so far they haven't lasted long though."},
@@ -39,7 +81,7 @@ module.exports = {
             if(err){
               res.send('false');
             } else {
-              if(data.indexOf("ps -ef") !== -1){
+              if(data.indexOf("ps -U term") !== -1){
                 res.send("true");
               } else {
                 res.send('false');
@@ -49,87 +91,35 @@ module.exports = {
         }
     },
     {
-      chat: "Nice.  Now that we have the correct PID we can try to kill the process.  We use the <code>kill</code> command for that.  Try running <code>kill [PID]</code> but replace the <code>[PID]</code> with the number you got from <code>ps -ef</code>",
+      chat: "Nice.  Now that we have the correct PID we can try to kill the process.  We use the <code>kill</code> command for that.  Try running <code>kill [PID]</code> but replace the <code>[PID]</code> with the number you got from <code>ps</code>",
       questions: [
         { prompt: "What does kill do?",
           answer: "Kill is a program to stop (kill) processes.  Usually it needs the PID to know which process to kill."},
-        { prompt: "I can't remember how to write to a file.",
-          answer: "That's ok.  Remember to use <code>echo \"CMD\" > command.txt</code>" },
         { prompt: "What is CMD?",
           answer: "CMD is just a short way to write command, but they have the same meaning."}
       ],
       statusFunction:
         function(req, res) {
-          fs.readFile('/home/term/command.txt', 'utf8', function(err, data) {
+          exec('ps -ef', function(err, data) {
             if(err){
               res.send('false');
             } else {
               if(data.indexOf("/app/extra_procs.sh") !== -1){
-                res.send("true");
-              } else {
-                res.send('false');
-              }
-            }
-          });
-        }
-    },
-    {
-      chat: "Great!  Now we know the command they ran to infiltrate our system.",
-      questions: [
-        { prompt: "How do I use the redirect?",
-          answer: "You must put the <code>&gt;</code> after the <code>echo hello</code> and then put the filename <code>temp</code> after the <code>&gt;</code>." },
-        { prompt: "I can't figure out how to do this!",
-          answer: "Try typing this in the console: <code>echo hello &gt; temp</code>" }
-      ],
-      statusFunction:
-        function(req, res) {
-          fs.readFile('/home/term/temp', 'utf8', function(err, data) {
-            if(err){
-              res.send("false");
-            } else {
-              if(data.indexOf("hello") === -1){
                 res.send("false");
               } else {
-                res.send("true");
+                res.send('true');
               }
             }
           });
         }
     },
     {
-      chat: "Once again you've done excelent work!!  Next we would like to read that file and see exactly what we wrote into it.  We use a program called <code>cat</code> to read a file.  See if you can figure out how to read this file back to us!",
+      chat: "Great work!!  It looks like the countdown has stopped!  Thank you so much, now we have electricity.",
       questions: [
-        { prompt: "I can't figure out how to read it.",
-          answer: "Try using the command and then the filename." },
-        { prompt: "I really can't figure this out!",
-          answer: "Try typing this into the terminal: <code>cat temp</code>" }
       ],
       statusFunction:
         function(req, res) {
-          fs.readFile('/home/term/.bash_history', 'utf8', function(err, data) {
-            if(err){
-              res.send('false');
-            } else {
-              if(data.indexOf("cat temp") !== -1){
-                res.send("true");
-              } else {
-                res.send('false');
-              }
-            }
-          });
-        }
-    },
-    {
-      chat: "Congratulations, you have completed the first chapter!",
-      questions: [
-        { prompt: "What do I do now?",
-          answer: "Now you must wait for us to build the next chapter." },
-        { prompt: "How can I find out more?",
-          answer: "you can't...yet." }
-      ],
-      statusFunction:
-        function(req, res) {
-          res.send('false');
+          res.send("false");
         }
     }
   ]

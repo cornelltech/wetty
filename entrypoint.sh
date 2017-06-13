@@ -4,6 +4,6 @@ cmd="$@"
 
 npm install
 
-nohup /app/extra_procs.sh &
+sudo -H -u term nohup /app/extra_procs.sh &
 
 exec $cmd
