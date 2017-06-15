@@ -20,6 +20,21 @@ module.exports = {
         }
       });
     });
+    app.get('/quest1/status', function(req, res) {
+      fs.readFile('/home/term/countdown.txt', 'utf8', function(err, data) {
+        if(data.indexOf("boom!!") !== -1){
+          res.send('fail');
+        } else {
+          exec('pidof -x extra_procs.sh', function(err, data) {
+            if(data === ''){
+              res.send('success');
+            } else {
+              res.send('continue');
+            }
+          });
+        }
+      });
+    });
   },
   steps: [
     { 
