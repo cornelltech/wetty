@@ -11,6 +11,15 @@ module.exports = {
         }
       });
     });
+    app.get('/quest1/start_proc', function(req, res) {
+      exec('if ! pidof -x extra_procs.sh >/dev/null; then sudo -H -u term nohup /app/extra_procs.sh & fi', function(err, data) {
+        if(err){
+          res.send(err);
+        } else {
+          res.send('true');
+        }
+      });
+    });
   },
   steps: [
     { 

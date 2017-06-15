@@ -1,1 +1,1 @@
-/app/chapters/sample/chapter_frontend.js
+/app/chapters/quest1/chapter_frontend.js

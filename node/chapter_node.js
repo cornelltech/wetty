@@ -1,1 +1,1 @@
-/app/chapters/sample/chapter_node.js
+/app/chapters/quest1/chapter_node.js
