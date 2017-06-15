@@ -88,7 +88,8 @@ app.get('/status/:index', function(req, res) {
 app.get('/chat/:index', function(req, res) {
   res.send({ 
     chat: chapter.steps[req.params["index"]]["chat"], 
-    questions: chapter.steps[req.params['index']]["questions"].map((x) => { return x["prompt"]; })
+    questions: chapter.steps[req.params['index']]["questions"].map((x) => { return x["prompt"]; }),
+    correct_question: typeof chapter.steps[req.params['index']]["correct_question"] !== "undefined" ? chapter.steps[req.params['index']]["correct_question"]:-1
   });
 });
 app.get('/chat/:index/answer/:question', function(req, res) {

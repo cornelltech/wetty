@@ -7,13 +7,20 @@ $(document).ready(function(){
       theySay(data["chat"]);
       $(".bottom_wrapper").html("");
       data["questions"].forEach((question, index) => { 
-        createButton(index, question);
+        if(index == data["correct_question"]){
+          createCorrectButton(index, question);
+        } else {
+          createButton(index, question);
+        }
       });
 			activateButtons();
     });
   }
   function createButton(index, question){
     $(".bottom_wrapper").append("<div class='question"+index+" send_message text'>" + question + "</div>");
+  }
+  function createCorrectButton(index, question){
+    $(".bottom_wrapper").append("<div class='question"+index+" send_message text correct'>" + question + "</div>");
   }
   function iSay(content){
     sendMessage(content, 'right');
@@ -30,16 +37,20 @@ $(document).ready(function(){
     });
   }
   function activateButtons(){
-    $("div.text").click(function() {
+    $("div.text").not(".correct").click(function() {
       var regexp = /question(\d+)/
       var questionNumber = $(this).attr("class").match(regexp)[1] 
       iSay($(this).html());
       $.get("/chat/" + currentFrame.toString() + "/answer/" + questionNumber, {}, function(data){
         setTimeout(function() {
           return theySay(data);
-        }, data.length*8);
+        }, 1000);
       });
       $(this).hide();
+    });
+    $("div.text.correct").click(function() {
+      currentFrame++;
+      getNextChat();
     });
   }
 
