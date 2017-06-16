@@ -12,6 +12,9 @@ pids
 logs
 results
 
+node/public/chapter_frontend.js
+node/chapter_node.js
+
 npm-debug.log
 node_modules/*
 node/frames.js

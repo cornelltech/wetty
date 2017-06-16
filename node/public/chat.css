@@ -8,15 +8,13 @@ body {
 }
 
 .chat_window {
-  position: absolute;
-  width: calc(100% - 20px);
+  position: relative;
   max-width: 800px;
-  height: 500px;
+  height: calc(100% - 350px);
   border-radius: 10px;
   background-color: #fff;
-  left: 50%;
-  top: 50%;
-  transform: translateX(-50%) translateY(-50%);
+  top: 15px;
+/*  transform: translateX(-50%) translateY(-50%); */
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
   background-color: #f8f8f8;
   overflow: hidden;
@@ -60,7 +58,7 @@ body {
   list-style: none;
   padding: 20px 10px 0 10px;
   margin: 0;
-  height: 347px;
+  height: calc(100% - 200px);
   overflow: scroll;
 }
 .messages .message {
@@ -145,8 +143,6 @@ body {
   width: 100%;
   background-color: #fff;
   padding: 20px 20px;
-  position: absolute;
-  bottom: 0;
 }
 .bottom_wrapper .message_input_wrapper {
   display: inline-block;

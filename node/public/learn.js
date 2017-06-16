@@ -52,6 +52,7 @@ $(document).ready(function(){
       currentFrame++;
       getNextChat();
     });
+    $(".messages").height("calc(100% - " + $(".bottom_wrapper").outerHeight() + "px - 63px)");
   }
 
   var Message;
