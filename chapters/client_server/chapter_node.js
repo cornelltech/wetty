@@ -2,6 +2,15 @@ var fs = require('fs');
 var exec = require('child_process').exec;
 module.exports = {
   endpoints: function(app){
+    app.get('/games/', function(req, res) {
+      fs.readFile('/var/www/date.txt', 'utf8', function(err, data) {
+        if(err){
+          res.send('<h1>The Date for our next Hunger games is: </h1>');
+        } else {
+          res.send('<h1>The Date for our next Hunger games is: '+data+'</h1>');
+        }
+      });
+    });
   },
   steps: [
     { 
@@ -10,7 +19,7 @@ module.exports = {
         { prompt: "What is a website?", 
           answer: "A website is exactly what we are using right now.  They are always hosted on computers called servers." },
         { prompt: "What is a web server?",
-          answer: "A server is a computer that is directly connected to the internet and all it does is respond to web requests.  It doesn't have a screen so the only way to interact with it is through this terminal." }
+          answer: "A web server is a computer that is directly connected to the internet and all it does is respond to web requests.  It doesn't have a screen so the only way to interact with it is through this terminal." }
       ], 
       statusFunction: 
         function(req, res) {
@@ -25,7 +34,6 @@ module.exports = {
     },
     { 
       chat: "Great.  Now that you've logged in do you see anything interesting?", 
-      correct_question: 2,
       questions: [
         { prompt: "No, nothing interesting here!", 
           answer: "Hmm.  Try looking around by using <code>ls</code> and <code>cd</code>." },
@@ -40,7 +48,7 @@ module.exports = {
             if(err){
               res.send('false');
             } else {
-              if(data.indexOf("cd /app/node/public/games/") !== -1){
+              if(data.indexOf("cd /var/www") !== -1){
                 res.send("true");
               } else {
                 res.send('false');
@@ -57,7 +65,7 @@ module.exports = {
           answer: "Try right clicking on the link and open it in a new tab." },
         { prompt: "June 24, 2017",
           answer: "Not quite, try again." },
-        { prompt: "July 14, 2017",
+        { prompt: "June 4, 2017",
           answer: "" }
       ], 
       statusFunction: 
@@ -74,6 +82,17 @@ module.exports = {
       ], 
       statusFunction: 
         function(req, res) {
+					fs.readFile('/var/www/date.txt', 'utf8', function(err, data) {
+            if(err){
+              res.send('false');
+            } else {
+              if(data.indexOf("August 12, 2017") !== -1){
+                res.send("true");
+              } else {
+                res.send('false');
+              }
+            }
+          });
         }
     },
     { 
