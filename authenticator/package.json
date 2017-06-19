@@ -1,0 +1,31 @@
+{
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.17.2",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.3",
+    "ejs": "^2.5.6",
+    "express": "^4.15.3",
+    "express-session": "^1.15.3",
+    "optimist": "^0.6",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0"
+  },
+  "devDependencies": {
+    "load-grunt-tasks": "^3.0",
+    "grunt": "^0.4",
+    "grunt-shell": "^1.1",
+    "grunt-mkdir": "^0.1",
+    "grunt-git": "^0.3",
+    "grunt-contrib-clean": "^0.6"
+  },
+  "main": "app.js",
+  "name": "authenticator",
+  "version": "1.0.0",
+  "description": "none",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
