@@ -70,15 +70,16 @@ module.exports = {
       ], 
       statusFunction: 
         function(req, res) {
+          res.send('false');
         }
     },
     { 
       chat: "Yes, that what I'm seeing also.  Ok, let's get to work.  See if you can find a file called date.txt.  Let's see if we can overwrite it with August 12, 2017.", 
       questions: [
         { prompt: "I can't remember how to write to a file.", 
-          answer: "Remember we use the <code>&gt</code> to take the output and write to a file." },
+          answer: "Remember we use the <code>&gt;</code> to take the output and write to a file." },
         { prompt: "I still can't get it to work!",
-          answer: "Try this command <code>echo 'August 12, 2017' > date.txt</code>.  Again notice that we have <code>'</code> around the date, so that it looks like one thing." }
+          answer: "Try this command <code>echo 'August 12, 2017' &gt; date.txt</code>.  Again notice that we have <code>'</code> around the date, so that it looks like one thing." }
       ], 
       statusFunction: 
         function(req, res) {
@@ -97,7 +98,7 @@ module.exports = {
     },
     { 
       chat: "Now that we've changed the file.  Let's go back to the webpage and see if it looks correct this time.  Remember to refresh it!  Here is the link again <a href='/games/' target='_blank'>games</a>", 
-      correct_answer: 1,
+      correct_question: 1,
       questions: [
         { prompt: "How do I refresh a page?", 
           answer: "There is a button that looks like a circle with an arrow next to the address bar.  If you click that it will refresh the page." },
@@ -106,6 +107,7 @@ module.exports = {
       ], 
       statusFunction: 
         function(req, res) {
+          res.send("false");
         }
     },
     { 
@@ -114,6 +116,7 @@ module.exports = {
       ], 
       statusFunction: 
         function(req, res) {
+          res.send("false");
         }
     }
   ]

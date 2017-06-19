@@ -84,6 +84,7 @@ app.use('/', express.static(path.join(__dirname, 'public')));
 
 app.get('/status/:index', function(req, res) {
   chapter.steps[req.params["index"]]["statusFunction"](req, res);
+  console.log("Getting status of index: " + req.params["index"]);
 });    
 app.get('/chat/:index', function(req, res) {
   res.send({ 
@@ -93,6 +94,7 @@ app.get('/chat/:index', function(req, res) {
   });
 });
 app.get('/chat/:index/answer/:question', function(req, res) {
+  console.log("responding with answer to index: " + req.params["index"] + " and question: " + req.params["question"]);
   res.send(chapter.steps[req.params["index"]]["questions"][req.params["question"]]["answer"]);
 });
 

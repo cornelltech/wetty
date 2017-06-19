@@ -13,4 +13,4 @@ ln -s /app/chapters/${chapter}/chapter_frontend.js ./node/public/chapter_fronten
 #  ln -s /app/chapters/${chapter}/extra_procs.sh ./extra_procs.sh
 #fi
 
-exec docker run -it -p 3000:3000 -v $(pwd)/node:/app/node -v $(pwd)/chapters:/app/chapters wetty './start_app.sh'
+exec docker run -it -p 5858:5858 -p 3000:3000 -p 8000:8000 -v $(pwd)/node:/app/node -v $(pwd)/chapters:/app/chapters wetty './start_app.sh'

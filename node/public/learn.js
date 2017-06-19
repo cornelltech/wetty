@@ -4,7 +4,9 @@ $(document).ready(function(){
   var currentFrame=0;  
   function getNextChat() {
     $.get("/chat/" + currentFrame.toString(), {}, function(data){
-      theySay(data["chat"]);
+      setTimeout(function() {
+        return theySay(data["chat"]);
+      }, 1000);
       $(".bottom_wrapper").html("");
       data["questions"].forEach((question, index) => { 
         if(index == data["correct_question"]){
@@ -49,6 +51,7 @@ $(document).ready(function(){
       $(this).hide();
     });
     $("div.text.correct").click(function() {
+      iSay($(this).html());
       currentFrame++;
       getNextChat();
     });
