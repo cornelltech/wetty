@@ -18,5 +18,6 @@ node/chapter_node.js
 npm-debug.log
 node_modules/*
 authenticator/node_modules/*
+authenticator/package-lock.json
 node/frames.js
 compose/nginx/dhparams.pem

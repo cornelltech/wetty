@@ -9,6 +9,9 @@ var session       = require('express-session');
 var flash         = require('connect-flash');
 var exphbs        = require('express-handlebars');
 
+var Docker = require('dockerode');
+var docker = new Docker();
+
 var port = 8888;
 var httpserv;
 
@@ -87,6 +90,15 @@ app.post('/login', passport.authenticate('local', { successRedirect: '/stuff',
                                    failureRedirect: '/login',
                                    failureFlash: true })
 );
+app.get('/docker', function(req, res) {
+  docker.listContainers(function (err, containers) {
+    res.send(containers);
+    console.log(containers);
+    //containers.forEach(function (containerInfo) {
+    //  docker.getContainer(containerInfo.Id).stop(cb);
+    //});
+  });
+});
 
 httpserv = http.createServer(app).listen(port, function() {
   console.log('http on port ' + port);
