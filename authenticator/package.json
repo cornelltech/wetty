@@ -3,6 +3,7 @@
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.17.2",
     "connect-flash": "^0.1.1",
+    "connect-pg-simple": "^4.2.0",
     "cookie-parser": "^1.4.3",
     "dockerode": "^2.5.0",
     "ejs": "^2.5.6",

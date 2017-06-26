@@ -13,4 +13,6 @@ services:
     environment:
       POSTGRES_PASSWORD: awesomesauce
       POSTGRES_DB: wetty
+    ports:
+      - "5432:5432"
 

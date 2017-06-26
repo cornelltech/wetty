@@ -14,37 +14,37 @@ var docker = new Docker();
 
 const pool = require('./lib/db');
 
-
 var port = 8888;
 var httpserv;
-
-const users = {
-scot: {password: 'K12Rocks!',
-  username: 'scot',
-id: 1}}
 
 
 passport.use(new LocalStrategy(
   function(username, password, done) {
-      console.log("user: " + username + " and password: " + password);
-      console.log(users[username]);
-      if (users[username] == undefined) {
-        return done(null, false, { message: 'Incorrect username.' });
-      } 
-      if (users[username]['password'] != password) {
-        return done(null, false, { message: 'Incorrect password.' });
-      }
-      console.log("should be authenticated");
-      return done(null, users[username]);
+      pool.getUser(username, function(user){
+        console.log("user: " + username + " and password: " + password);
+        console.log(user);
+        if (user == undefined) {
+          return done(null, false, { message: 'Incorrect username.' });
+        } 
+        if (user.password != password) {
+          return done(null, false, { message: 'Incorrect password.' });
+        }
+        console.log("should be authenticated");
+        return done(null, user);
+      });
   }
 ));
 
 passport.serializeUser(function(user, done) {
-    done(null, user);
+    done(null, user.username);
 });
 
-passport.deserializeUser(function(user, done) {
-    done(null, user);
+passport.deserializeUser(function(username, done) {
+    console.log(username);
+    pool.getUser(username, function( data ){
+      console.log(data);
+      done(null, data);
+    });
 });
 
 function authenticationMiddleware () {  
@@ -66,6 +66,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 //app.use(cookieParser());
 app.use(session({ 
+  store: pool.pgSession,
   secret: 'ilovescotchscotchyscotchscotch', 
   resave: true,
   saveUninitialized: true 
@@ -83,11 +84,21 @@ app.get('/home', function (req, res) {
 });
 
 app.get('/stuff', passport.authenticationMiddleware(), function (req, res) {
-  console.log(req.session.passport.user);
-  res.render('stuff', {user: req.session.passport.user.username})
+  console.log(req.user);
+  res.render('stuff', {user: req.user.username})
+});
+app.get('/signup', function(req, res) {
+  res.render('signup');
+});
+app.post('/signup', function(req, res) {
+  pool.addUser(req.body.username, { 
+    username: req.body.username,
+    password: req.body.password,
+    chapters: [] });
+  res.redirect('/login');
 });
 app.get('/login', function(req, res) {
-  res.send('<form action="/login" method="post"><div><label>Username:</label><input type="text" name="username"/></div><div><label>Password:</label><input type="password" name="password"/></div><div><input type="submit" value="Log In"/></div></form>');
+  res.render('login');
 });
 app.post('/login', passport.authenticate('local', { successRedirect: '/stuff',
                                    failureRedirect: '/login',
@@ -107,8 +118,8 @@ app.get('/db', function(req, res) {
     if(err) {
       return console.log("error running query", err);
     }
-    console.log(resp.rows[0].data.hello);
-    res.send("number:" + resp.rows[0]);
+    console.log(resp.rows);
+    res.send(resp.rows);
   }); 
 });
 

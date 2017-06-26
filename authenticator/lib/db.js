@@ -1,4 +1,6 @@
 const pg = require('pg');
+var session       = require('express-session');
+var pgSession = require('connect-pg-simple')(session);
 
 // create a config to configure both pooling behavior
 // and client options
@@ -29,11 +31,16 @@ pool.on('error', function (err, client) {
   console.error('idle client error', err.message, err.stack);
 });
 
+module.exports.pgSession = new pgSession({
+  pool: pool,
+  tableName: "session" });
+
 //export the query method for passing queries to the pool
-module.exports.query = function (text, values, callback) {
+function query(text, values, callback) {
   console.log('query:', text, values);
   return pool.query(text, values, callback);
 };
+module.exports.query = query;
 
 // the pool also supports checking out a client for
 // multiple operations, such as a transaction
@@ -42,12 +49,12 @@ module.exports.connect = function (callback) {
 };
 
 module.exports.setupdb = function () {
-  pool.query("CREATE TABLE users ( username varchar(40) PRIMARY KEY, data json )", [], function(err, res) {
+  query("CREATE TABLE users ( username varchar(40) PRIMARY KEY, data json )", [], function(err, res) {
     if(err) {
       return console.error('error running query', err);
     }
   });
-  pool.query("INSERT INTO users VALUES ('scot', '{ \"hello\": \"some stuff\"}')", [], function(err, res) {
+  query("INSERT INTO users VALUES ('scot', '{ \"hello\": \"some stuff\"}')", [], function(err, res) {
     if(err) {
       return console.error('error running query', err);
     }
@@ -55,23 +62,24 @@ module.exports.setupdb = function () {
 }
 
 module.exports.addUser = function(user, data){
-  pool.query("INSERT INTO users VALUES ($1::varchar, $2::json)", [user, data], function(err, res) {
+  query("INSERT INTO users VALUES ($1::varchar, $2::json)", [user, data], function(err, res) {
     if(err) {
       return console.error('error running query', err);
     }
   });
 }
 module.exports.updateUser = function(user, newData){
-  pool.query("UPDATE users SET data = $1::json WHERE username = $2::varchar", [newData, user], function(err, res) {
+  query("UPDATE users SET data = $1::json WHERE username = $2::varchar", [newData, user], function(err, res) {
     if(err) {
       return console.error('error running query', err);
     }
   });
 }
-module.exports.getUser = function(user){
-  pool.query("SELECT data FROM users WHERE username = $1::varchar", [user], function(err, res) {
+module.exports.getUser = function(user, onSuccess){
+  query("SELECT data FROM users WHERE username = $1", [user], function(err, res) {
     if(err) {
       return console.error('error running query', err);
     }
+    onSuccess(res.rows[0].data);
   });
 }
