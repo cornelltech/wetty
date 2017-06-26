@@ -12,6 +12,9 @@ var exphbs        = require('express-handlebars');
 var Docker = require('dockerode');
 var docker = new Docker();
 
+const pool = require('./lib/db');
+
+
 var port = 8888;
 var httpserv;
 
@@ -99,6 +102,16 @@ app.get('/docker', function(req, res) {
     //});
   });
 });
+app.get('/db', function(req, res) {
+  pool.query('select * from users', [], function(err, resp) {
+    if(err) {
+      return console.log("error running query", err);
+    }
+    console.log(resp.rows[0].data.hello);
+    res.send("number:" + resp.rows[0]);
+  }); 
+});
+
 
 httpserv = http.createServer(app).listen(port, function() {
   console.log('http on port ' + port);

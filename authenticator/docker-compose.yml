@@ -8,3 +8,9 @@ services:
     ports:
       - "8888:8888"
     command: "./start_app.sh"
+  db:
+    image: postgres:9.6
+    environment:
+      POSTGRES_PASSWORD: awesomesauce
+      POSTGRES_DB: wetty
+

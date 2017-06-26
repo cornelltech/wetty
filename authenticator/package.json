@@ -11,7 +11,8 @@
     "express-session": "^1.15.3",
     "optimist": "^0.6",
     "passport": "^0.3.2",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "pg": "^6.4.0"
   },
   "main": "app.js",
   "name": "authenticator",
