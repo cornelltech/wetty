@@ -68,14 +68,24 @@ module.exports.addUser = function(user, data){
     }
   });
 }
-module.exports.updateUser = function(user, newData){
+function updateUser(user, newData){
   query("UPDATE users SET data = $1::json WHERE username = $2::varchar", [newData, user], function(err, res) {
     if(err) {
       return console.error('error running query', err);
     }
   });
 }
-module.exports.getUser = function(user, onSuccess){
+module.exports.updateUser = updateUser;
+module.exports.addChapter = function(user, chapter){
+  getUser(user, function(user_data){
+    user_data.chapters.push(chapter);
+    updateUser(user, user_data);
+  });
+}
+
+
+  
+function getUser(user, onSuccess){
   query("SELECT data FROM users WHERE username = $1", [user], function(err, res) {
     if(err) {
       return console.error('error running query', err);
@@ -83,3 +93,4 @@ module.exports.getUser = function(user, onSuccess){
     onSuccess(res.rows[0].data);
   });
 }
+module.exports.getUser = getUser;

@@ -80,7 +80,7 @@ app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
 app.get('/home', function (req, res) {
-      res.render('home');
+  res.render('home', req.user);
 });
 
 app.get('/stuff', passport.authenticationMiddleware(), function (req, res) {
@@ -100,7 +100,7 @@ app.post('/signup', function(req, res) {
 app.get('/login', function(req, res) {
   res.render('login');
 });
-app.post('/login', passport.authenticate('local', { successRedirect: '/stuff',
+app.post('/login', passport.authenticate('local', { successRedirect: '/home',
                                    failureRedirect: '/login',
                                    failureFlash: true })
 );

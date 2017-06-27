@@ -1,1 +1,7 @@
-<h1> Hello there!</h1>
+<h1> Hello there! {{ username }}</h1>
+
+<ul>
+  {{#each chapters}}
+  <li>{{this}}</li>
+  {{/each}}
+</ul>
