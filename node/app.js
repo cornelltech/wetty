@@ -6,7 +6,8 @@ var server = require('socket.io');
 var pty = require('pty.js');
 var fs = require('fs');
 var exec = require('child_process').exec;
-var chapter = require('./chapter_node');
+var chapter = require('../dynamic/chapter_node');
+var exphbs = require('express-handlebars');
 
 var opts = require('optimist')
     .options({
@@ -70,6 +71,7 @@ if (opts.sslkey && opts.sslcert) {
     opts.ssl['cert'] = fs.readFileSync(path.resolve(opts.sslcert));
 }
 
+
 process.on('uncaughtException', function(e) {
     console.error('Error: ' + e);
 });
@@ -77,23 +79,51 @@ process.on('uncaughtException', function(e) {
 var httpserv;
 
 var app = express();
-app.get('/wetty/ssh/:user', function(req, res) {
+app.set('views', path.join(__dirname, 'views'));
+app.engine('handlebars', exphbs({defaultLayout: 'main', layoutsDir: "node/views/layouts/"}));
+app.set('view engine', 'handlebars');
+app.locals.chapter_name = process.env.CHAPTER;
+console.log(process.env.CHAPTER);
+
+var chapter_name = process.env.CHAPTER;
+
+app.get('/' + chapter_name + '/wetty/ssh/:user', function(req, res) {
     res.sendfile(__dirname + '/public/wetty/index.html');
 });
-app.use('/', express.static(path.join(__dirname, 'public')));
+app.get('/' + chapter_name + '/chapter_frontend.js', function(req, res){
+  fs.readFile('/app/dynamic/chapter_frontend.js', 'utf8', function(err, data) {
+    if(err){
+      res.send(err);
+    }
+    res.send(data);
+  });
+});
 
-app.get('/status/:index', function(req, res) {
+
+app.get('/' + chapter_name + '/', function(req, res){
+  res.render('index');
+});
+app.use('/' + chapter_name + '/', express.static(path.join(__dirname, 'public')));
+app.get('/' + chapter_name + '/learn.js', function(req, res){
+  res.render('learn_js', { layout: false });
+});
+app.get('/' + chapter_name + '/wetty/wetty.js', function(req, res){
+  res.render('wetty_js', { layout: false });
+});
+
+
+app.get('/' + chapter_name + '/status/:index', function(req, res) {
   chapter.steps[req.params["index"]]["statusFunction"](req, res);
   console.log("Getting status of index: " + req.params["index"]);
 });    
-app.get('/chat/:index', function(req, res) {
+app.get('/' + chapter_name + '/chat/:index', function(req, res) {
   res.send({ 
     chat: chapter.steps[req.params["index"]]["chat"], 
     questions: chapter.steps[req.params['index']]["questions"].map((x) => { return x["prompt"]; }),
     correct_question: typeof chapter.steps[req.params['index']]["correct_question"] !== "undefined" ? chapter.steps[req.params['index']]["correct_question"]:-1
   });
 });
-app.get('/chat/:index/answer/:question', function(req, res) {
+app.get('/' + chapter_name + '/chat/:index/answer/:question', function(req, res) {
   console.log("responding with answer to index: " + req.params["index"] + " and question: " + req.params["question"]);
   res.send(chapter.steps[req.params["index"]]["questions"][req.params["question"]]["answer"]);
 });
@@ -112,7 +142,7 @@ if (runhttps) {
     });
 }
 
-var io = server(httpserv,{path: '/wetty/socket.io'});
+var io = server(httpserv,{path: '/' + chapter_name + '/wetty/socket.io'});
 io.on('connection', function(socket){
     var sshuser = '';
     var request = socket.request;

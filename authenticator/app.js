@@ -84,7 +84,6 @@ app.get('/home', function (req, res) {
 });
 
 app.get('/stuff', passport.authenticationMiddleware(), function (req, res) {
-  console.log(req.user);
   res.render('stuff', {user: req.user.username})
 });
 app.get('/signup', function(req, res) {

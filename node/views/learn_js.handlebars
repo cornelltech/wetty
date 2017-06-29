@@ -3,7 +3,7 @@
 $(document).ready(function(){
   var currentFrame=0;  
   function getNextChat() {
-    $.get("/chat/" + currentFrame.toString(), {}, function(data){
+    $.get("/{{ chapter_name }}/chat/" + currentFrame.toString(), {}, function(data){
       setTimeout(function() {
         return theySay(data["chat"]);
       }, 1000);
@@ -31,7 +31,7 @@ $(document).ready(function(){
     sendMessage(content, 'left');
   }
   function getStatus() {
-    $.get("/status/" + currentFrame.toString(), {}, function(data){
+    $.get("/{{ chapter_name }}/status/" + currentFrame.toString(), {}, function(data){
       if( data === "true" ){
         currentFrame++;
         getNextChat();
@@ -43,7 +43,7 @@ $(document).ready(function(){
       var regexp = /question(\d+)/
       var questionNumber = $(this).attr("class").match(regexp)[1] 
       iSay($(this).html());
-      $.get("/chat/" + currentFrame.toString() + "/answer/" + questionNumber, {}, function(data){
+      $.get("/{{ chatper_name }}/chat/" + currentFrame.toString() + "/answer/" + questionNumber, {}, function(data){
         setTimeout(function() {
           return theySay(data);
         }, 1000);
@@ -92,7 +92,7 @@ $(document).ready(function(){
   getNextChat();
   setInterval(getStatus, 1000);
 
-  $.getScript('chapter_frontend.js', function() {
+  $.getScript('/{{ chapter_name }}/chapter_frontend.js', function() {
   });
 
 });

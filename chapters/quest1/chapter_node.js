@@ -1,6 +1,7 @@
 var fs = require('fs');
 var exec = require('child_process').exec;
 module.exports = {
+  chapter_name: "quest1",
   endpoints: function(app){
     app.get('/quest1/countdown', function(req, res) {
       fs.readFile('/home/term/countdown.txt', 'utf8', function(err, data) {

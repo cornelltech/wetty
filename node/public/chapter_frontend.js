@@ -1,1 +1,0 @@
-/app/chapters/client_server/chapter_frontend.js

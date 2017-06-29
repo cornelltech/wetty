@@ -1,0 +1,32 @@
+version: '3'
+services:
+  quest1:
+    build: 
+      context: ./
+      dockerfile: ./chapters/quest1/Dockerfile
+    ports:
+      - "3000"
+    command: ["./start_app.sh"]
+    volumes:
+      - ./node:/app/node
+      - ./chapters:/app/chapters
+    environment:
+      CHAPTER: "quest1"
+
+  client_server:
+    build: 
+      context: ./
+      dockerfile: ./chapters/client_server/Dockerfile
+    ports:
+      - "3000"
+    command: ["./start_app.sh"]
+    volumes:
+      - ./node:/app/node
+      - ./chapters:/app/chapters
+    environment:
+      CHAPTER: "client_server"
+
+  nginx:
+    build: ./compose/nginx/dev/
+    ports:
+      - "8000:80"

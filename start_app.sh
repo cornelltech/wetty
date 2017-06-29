@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo $CHAPTER
+
 
 npm install nodemon -g
 nodemon node/app.js -p 3000 
