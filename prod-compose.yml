@@ -1,9 +1,17 @@
-version: '2'
+version: '3'
 services:
-  web:
-    build: .
+  quest1:
+    build: 
+      context: ./
+      dockerfile: ./chapters/quest1/Dockerfile
     ports:
-      - "3000:3000"
+      - "3000"
+  client_server:
+    build: 
+      context: ./
+      dockerfile: ./chapters/client_server/Dockerfile
+    ports:
+      - "3000"
 
   nginx:
     build: ./compose/nginx

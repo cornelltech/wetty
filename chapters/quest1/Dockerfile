@@ -2,6 +2,7 @@ FROM node:7.10
 
 ADD ./ /app
 COPY ./chapters/quest1/chapter_node.js /app/node/chapter_node.js
+COPY ./chapters/quest1/chapter_frontend.js /app/node/public/chapter_frontend.js
 COPY ./chapters/quest1/extra_procs.sh /app/extra_procs.sh
 WORKDIR /app
 RUN apt-get update
@@ -18,4 +19,4 @@ ADD ./chapters/quest1/files /home/term/files
 EXPOSE 3000
 
 ENTRYPOINT ["/app/entrypoint.sh"]
-CMD ["node", "app.js", "-p", "3000"]
+CMD ["node", "node/app.js", "-p", "3000"]

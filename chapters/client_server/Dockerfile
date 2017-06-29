@@ -2,6 +2,7 @@ FROM node:7.10
 
 ADD ./ /app
 COPY ./chapters/client_server/chapter_node.js /app/node/chapter_node.js
+COPY ./chapters/client_server/chapter_frontend.js /app/node/chapter_frontend.js
 WORKDIR /app
 RUN apt-get update
 RUN apt-get install -y vim
@@ -16,4 +17,4 @@ EXPOSE 3000
 EXPOSE 5858
 
 ENTRYPOINT ["/app/entrypoint.sh"]
-CMD ["node", "app.js", "-p", "3000"]
+CMD ["node", "node/app.js", "-p", "3000"]
