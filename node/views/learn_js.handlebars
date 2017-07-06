@@ -43,7 +43,7 @@ $(document).ready(function(){
       var regexp = /question(\d+)/
       var questionNumber = $(this).attr("class").match(regexp)[1] 
       iSay($(this).html());
-      $.get("/{{ chatper_name }}/chat/" + currentFrame.toString() + "/answer/" + questionNumber, {}, function(data){
+      $.get("/{{ chapter_name }}/chat/" + currentFrame.toString() + "/answer/" + questionNumber, {}, function(data){
         setTimeout(function() {
           return theySay(data);
         }, 1000);

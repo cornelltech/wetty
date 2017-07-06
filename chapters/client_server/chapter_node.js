@@ -1,8 +1,9 @@
 var fs = require('fs');
 var exec = require('child_process').exec;
 module.exports = {
+  chapter_name: "client_server",
   endpoints: function(app){
-    app.get('/games/', function(req, res) {
+    app.get('/client_server/games/', function(req, res) {
       fs.readFile('/var/www/date.txt', 'utf8', function(err, data) {
         if(err){
           res.send('<h1>The Date for our next Hunger games is: </h1>');

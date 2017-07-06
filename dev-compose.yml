@@ -30,3 +30,20 @@ services:
     build: ./compose/nginx/dev/
     ports:
       - "8000:80"
+
+  auth:
+    build: ./authenticator/
+    volumes:
+      - ./authenticator:/app
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "8888"
+    command: ["./start_app.sh"]
+
+  db:
+    image: postgres:9.6
+    environment:
+      POSTGRES_PASSWORD: awesomesauce
+      POSTGRES_DB: wetty
+    ports:
+      - "5432:5432"
