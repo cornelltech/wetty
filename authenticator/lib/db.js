@@ -94,3 +94,12 @@ function getUser(user, onSuccess){
   });
 }
 module.exports.getUser = getUser;
+function getChapters(onSuccess){
+  query("SELECT * FROM chapters", function(err, res) {
+    if(err) {
+      return console.error('error running query', err);
+    }
+    onSuccess(res.rows.map(function (x){ return x.name }));
+  });
+}
+module.exports.getChapters = getChapters;

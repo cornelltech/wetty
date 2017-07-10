@@ -79,13 +79,14 @@ app.use(flash()); // use connect-flash for flash messages stored in session
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
-app.get('/home', function (req, res) {
-  res.render('home', req.user);
+
+app.get('/home', passport.authenticationMiddleware(), function (req, res) {
+  pool.getChapters(function(data) {
+    var chapter_links = data.map(function (x) { return { name: x, available: req.user.available_chapters.includes(x) }});
+    res.render('home', { user: req.user, chapter_links: chapter_links });
+  });
 });
 
-app.get('/stuff', passport.authenticationMiddleware(), function (req, res) {
-  res.render('stuff', {user: req.user.username})
-});
 app.get('/signup', function(req, res) {
   res.render('signup');
 });
@@ -93,7 +94,7 @@ app.post('/signup', function(req, res) {
   pool.addUser(req.body.username, { 
     username: req.body.username,
     password: req.body.password,
-    chapters: [] });
+    available_chapters: ["quest1"] });
   res.redirect('/login');
 });
 app.get('/login', function(req, res) {
