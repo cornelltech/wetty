@@ -13,68 +13,16 @@ var Docker = require('dockerode');
 var docker = new Docker();
 
 const pool = require('../shared/db');
+const my_session = require('../shared/session');
 
 var port = 8888;
 var httpserv;
 
-
-passport.use(new LocalStrategy(
-  function(username, password, done) {
-      pool.getUser(username, function(user){
-        console.log("user: " + username + " and password: " + password);
-        console.log(user);
-        if (user == undefined) {
-          return done(null, false, { message: 'Incorrect username.' });
-        } 
-        if (user.password != password) {
-          return done(null, false, { message: 'Incorrect password.' });
-        }
-        console.log("should be authenticated");
-        return done(null, user);
-      });
-  }
-));
-
-passport.serializeUser(function(user, done) {
-    done(null, user.username);
-});
-
-passport.deserializeUser(function(username, done) {
-    console.log(username);
-    pool.getUser(username, function( data ){
-      console.log(data);
-      done(null, data);
-    });
-});
-
-function authenticationMiddleware () {  
-  return function (req, res, next) {
-
-    console.log("authenticating...");
-    if (req.isAuthenticated()) {
-      console.log('successful auth');
-      return next()
-    }
-    res.redirect('/login')
-  }
-}
-
-passport.authenticationMiddleware = authenticationMiddleware
+my_session.setup(pool);
 
 var app = express();
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
-//app.use(cookieParser());
-app.use(session({ 
-  store: pool.pgSession,
-  secret: 'ilovescotchscotchyscotchscotch', 
-  resave: true,
-  saveUninitialized: true 
-})); // session secret
 
-app.use(passport.initialize());
-app.use(passport.session()); // persistent login sessions
-app.use(flash()); // use connect-flash for flash messages stored in session
+my_session.add_session_to_express(app, pool);
 
 app.engine('handlebars', exphbs({defaultLayout: 'main', layoutsDir: '/app/auth/views/layouts/'}));
 app.set('view engine', 'handlebars');
