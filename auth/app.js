@@ -83,7 +83,13 @@ app.set('views', '/app/auth/views/');
 
 app.get('/home', passport.authenticationMiddleware(), function (req, res) {
   pool.getChapters(function(data) {
-    var chapter_links = data.map(function (x) { return { name: x, available: req.user.available_chapters.includes(x) }});
+    var chapter_links = data.map(function (x) { 
+      if(req.user.available_chapters){ 
+        return { name: x, available: req.user.available_chapters.includes(x) }
+      } else {
+        return { name: x, available: false }
+      }
+    });
     res.render('home', { user: req.user, chapter_links: chapter_links });
   });
 });
