@@ -3,42 +3,51 @@ services:
   quest1:
     build: 
       context: ./
-      dockerfile: ./chapters/quest1/Dockerfile
+      dockerfile: ./chapter_extra/quest1/Dockerfile
     ports:
       - "3000"
     command: ["./start_app.sh"]
     volumes:
-      - ./node:/app/node
-      - ./chapters:/app/chapters
+      - ./chapter_base:/app/chapter_base
+      - ./chapter_extra:/app/chapter_extra
+      - ./shared:/app/shared
     environment:
       CHAPTER: "quest1"
+      APP: chapter_base/app.js
 
   client_server:
     build: 
       context: ./
-      dockerfile: ./chapters/client_server/Dockerfile
+      dockerfile: ./chapter_extra/client_server/Dockerfile
     ports:
       - "3000"
     command: ["./start_app.sh"]
     volumes:
-      - ./node:/app/node
-      - ./chapters:/app/chapters
+      - ./chapter_base:/app/chapter_base
+      - ./chapter_extra:/app/chapter_extra
+      - ./shared:/app/shared
     environment:
       CHAPTER: "client_server"
+      APP: chapter_base/app.js
 
   nginx:
-    build: ./compose/nginx/dev/
+    build: ./nginx/dev/
     ports:
       - "8000:80"
 
   auth:
-    build: ./authenticator/
+    build: 
+      context: ./
+      dockerfile: ./auth/Dockerfile
     volumes:
-      - ./authenticator:/app
+      - ./auth:/app/auth
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./shared:/app/shared
     ports:
       - "8888"
     command: ["./start_app.sh"]
+    environment:
+      APP: auth/app.js
 
   db:
     image: postgres:9.6

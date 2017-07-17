@@ -12,7 +12,7 @@ var exphbs        = require('express-handlebars');
 var Docker = require('dockerode');
 var docker = new Docker();
 
-const pool = require('./lib/db');
+const pool = require('../shared/db');
 
 var port = 8888;
 var httpserv;
@@ -76,8 +76,9 @@ app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
 
-app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.engine('handlebars', exphbs({defaultLayout: 'main', layoutsDir: '/app/auth/views/layouts/'}));
 app.set('view engine', 'handlebars');
+app.set('views', '/app/auth/views/');
 
 
 app.get('/home', passport.authenticationMiddleware(), function (req, res) {

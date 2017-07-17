@@ -80,7 +80,7 @@ var httpserv;
 
 var app = express();
 app.set('views', path.join(__dirname, 'views'));
-app.engine('handlebars', exphbs({defaultLayout: 'main', layoutsDir: "node/views/layouts/"}));
+app.engine('handlebars', exphbs({defaultLayout: 'main', layoutsDir: "chapter_base/views/layouts/"}));
 app.set('view engine', 'handlebars');
 app.locals.chapter_name = process.env.CHAPTER;
 console.log(process.env.CHAPTER);

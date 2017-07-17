@@ -90,7 +90,11 @@ function getUser(user, onSuccess){
     if(err) {
       return console.error('error running query', err);
     }
-    onSuccess(res.rows[0].data);
+    if(res.rows[0]){
+      onSuccess(res.rows[0].data);
+    }else{
+      onSuccess(false);
+    }
   });
 }
 module.exports.getUser = getUser;

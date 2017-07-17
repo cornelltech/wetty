@@ -1,1 +1,0 @@
-/app/chapters/quest1/chapter_node.js
