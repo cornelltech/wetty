@@ -154,7 +154,7 @@ module.exports = {
         }
     },
     {
-      chat: "Great work!!  It looks like the countdown has stopped!  Thank you so much, now we have electricity.",
+      chat: "Great work!!  It looks like the countdown has stopped!  Thank you so much, now we have electricity. Click <form action=\"/finished\" method='post' id='success_form'><input type='hidden' name='chapter' value='client_server'><a href=\"javascript:{}\" onclick=\"document.getElementById('success_form').submit();\">here</a></form> to continue.",
       questions: [
       ],
       statusFunction:

@@ -78,7 +78,8 @@ function updateUser(user, newData){
 module.exports.updateUser = updateUser;
 module.exports.addChapter = function(user, chapter){
   getUser(user, function(user_data){
-    user_data.chapters.push(chapter);
+    console.log(user_data.available_chapters);
+    user_data.available_chapters.push(chapter);
     updateUser(user, user_data);
   });
 }
