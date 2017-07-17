@@ -84,6 +84,19 @@ module.exports.addChapter = function(user, chapter){
 }
 
 
+function getAllUsers(onSuccess){
+  query("SELECT data FROM users", function(err, res) {
+    if(err) {
+      return console.error('error running query', err);
+    }
+    if(res.rows){
+      onSuccess(res.rows);
+    }else{
+      onSuccess(false);
+    }
+  });
+}
+module.exports.getAllUsers = getAllUsers;
   
 function getUser(user, onSuccess){
   query("SELECT data FROM users WHERE username = $1", [user], function(err, res) {

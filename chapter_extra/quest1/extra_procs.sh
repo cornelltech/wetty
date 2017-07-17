@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 
-file=/home/term/countdown.txt
+file=/home/$1/countdown.txt
 
 
 for i in `seq 300 -1 0`; do

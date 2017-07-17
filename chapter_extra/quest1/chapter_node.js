@@ -13,7 +13,7 @@ module.exports = {
       });
     });
     app.get('/quest1/start_proc', function(req, res) {
-      exec('if ! pidof -x extra_procs.sh >/dev/null; then sudo -H -u term nohup /app/extra_procs.sh & fi', function(err, data) {
+      exec('if ! pidof -x extra_procs.sh >/dev/null; then sudo -H -u '+req.user.username+' nohup /app/extra_procs.sh '+req.user.username+' & fi', function(err, data) {
         if(err){
           res.send(err);
         } else {
@@ -23,6 +23,10 @@ module.exports = {
     });
     app.get('/quest1/status', function(req, res) {
       fs.readFile('/home/'+req.user.username+'/countdown.txt', 'utf8', function(err, data) {
+        if(err){
+          console.log(err);
+          res.send(err);
+        }
         if(data.indexOf("boom!!") !== -1){
           res.send('fail');
         } else {
@@ -104,7 +108,7 @@ module.exports = {
         }
     },
     {
-      chat: "Great work!!  Our sources told us that they left the command they ran in that file.  But in order to stop the process we need the PID or process ID.  Every process on this mainframe has an ID and we need to find the ID of this one.  Let's list the processes that are running and see if we can find the process.  To list the current processes run this command <code>ps -U term</code>.",
+      chat: "Great work!!  Our sources told us that they left the command they ran in that file.  But in order to stop the process we need the PID or process ID.  Every process on this mainframe has an ID and we need to find the ID of this one.  Let's list the processes that are running and see if we can find the process.  To list the current processes run this command <code>ps -U {{username}}</code>.",
       questions: [
         { prompt: "What is a process?",
           answer: "A process is a running program.  On a phone a process might be an app you have installed or is running.  On this system an example is everytime you run a command, so far they haven't lasted long though."},
@@ -117,7 +121,7 @@ module.exports = {
             if(err){
               res.send('false');
             } else {
-              if(data.indexOf("ps -U term") !== -1){
+              if(data.indexOf("ps -U "+req.user.username) !== -1){
                 res.send("true");
               } else {
                 res.send('false');

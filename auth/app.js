@@ -18,6 +18,7 @@ var port = 8888;
 var httpserv;
 
 my_session.setup(pool);
+docker.sync(pool);
 
 var app = express();
 
