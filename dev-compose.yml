@@ -14,6 +14,8 @@ services:
     environment:
       CHAPTER: "quest1"
       APP: chapter_base/app.js
+    labels:
+      wetty.chapter: "quest1"
 
   client_server:
     build: 
@@ -29,6 +31,8 @@ services:
     environment:
       CHAPTER: "client_server"
       APP: chapter_base/app.js
+    labels:
+      wetty.chapter: "client_server"
 
   nginx:
     build: ./nginx/dev/

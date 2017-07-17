@@ -9,11 +9,10 @@ var session       = require('express-session');
 var flash         = require('connect-flash');
 var exphbs        = require('express-handlebars');
 
-var Docker = require('dockerode');
-var docker = new Docker();
 
 const pool = require('../shared/db');
 const my_session = require('../shared/session');
+const docker = require('../shared/docker');
 
 var port = 8888;
 var httpserv;
@@ -41,6 +40,12 @@ app.get('/home', passport.authenticationMiddleware(), function (req, res) {
     res.render('home', { user: req.user, chapter_links: chapter_links });
   });
 });
+app.post('/finished', passport.authenticationMiddleware(), function(req, res) {
+  var chapter = req.body.chapter;
+  pool.addChapter(req.user.username, chapter);
+  docker.add_user(chapter, req.user.username, req.user.password);
+  res.redirect('/home');
+});
 
 app.get('/signup', function(req, res) {
   res.render('signup');
@@ -50,6 +55,7 @@ app.post('/signup', function(req, res) {
     username: req.body.username,
     password: req.body.password,
     available_chapters: ["quest1"] });
+  docker.add_user('quest1', req.body.username, req.body.password);
   res.redirect('/login');
 });
 app.get('/login', function(req, res) {
@@ -59,15 +65,6 @@ app.post('/login', passport.authenticate('local', { successRedirect: '/home',
                                    failureRedirect: '/login',
                                    failureFlash: true })
 );
-app.get('/docker', function(req, res) {
-  docker.listContainers(function (err, containers) {
-    res.send(containers);
-    console.log(containers);
-    //containers.forEach(function (containerInfo) {
-    //  docker.getContainer(containerInfo.Id).stop(cb);
-    //});
-  });
-});
 app.get('/db', function(req, res) {
   pool.query('select * from users', [], function(err, resp) {
     if(err) {

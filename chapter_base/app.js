@@ -95,9 +95,9 @@ console.log(process.env.CHAPTER);
 
 var chapter_name = process.env.CHAPTER;
 
-app.get('/' + chapter_name + '/wetty/ssh/:user', function(req, res) {
-    res.sendfile(__dirname + '/public/wetty/index.html');
-});
+//app.get('/' + chapter_name + '/wetty/ssh/:user', function(req, res) {
+//    res.sendfile(__dirname + '/public/wetty/index.html');
+//});
 app.get('/' + chapter_name + '/chapter_frontend.js', function(req, res){
   fs.readFile('/app/dynamic/chapter_frontend.js', 'utf8', function(err, data) {
     if(err){

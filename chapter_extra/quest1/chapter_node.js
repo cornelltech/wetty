@@ -4,7 +4,7 @@ module.exports = {
   chapter_name: "quest1",
   endpoints: function(app){
     app.get('/quest1/countdown', function(req, res) {
-      fs.readFile('/home/term/countdown.txt', 'utf8', function(err, data) {
+      fs.readFile('/home/'+req.user.username+'/countdown.txt', 'utf8', function(err, data) {
         if(err){
           res.send('file read error!');
         } else {
@@ -22,7 +22,7 @@ module.exports = {
       });
     });
     app.get('/quest1/status', function(req, res) {
-      fs.readFile('/home/term/countdown.txt', 'utf8', function(err, data) {
+      fs.readFile('/home/'+req.user.username+'/countdown.txt', 'utf8', function(err, data) {
         if(data.indexOf("boom!!") !== -1){
           res.send('fail');
         } else {
@@ -48,7 +48,7 @@ module.exports = {
       ],
       statusFunction:
         function(req, res) {
-          fs.readFile('/home/term/.bash_history', 'utf8', function(err, data) {
+          fs.readFile('/home/'+req.user.username+'/.bash_history', 'utf8', function(err, data) {
             if(err){
               res.send('false');
             } else {
@@ -69,7 +69,7 @@ module.exports = {
       ],
       statusFunction: 
         function(req, res) {
-          fs.readFile('/home/term/.bash_history', 'utf8', function(err, data) {
+          fs.readFile('/home/'+req.user.username+'/.bash_history', 'utf8', function(err, data) {
             if(err){
               res.send('false');
             } else {
@@ -90,7 +90,7 @@ module.exports = {
       ], 
       statusFunction: 
         function(req, res) {
-          fs.readFile('/home/term/.bash_history', 'utf8', function(err, data) {
+          fs.readFile('/home/'+req.user.username+'/.bash_history', 'utf8', function(err, data) {
             if(err){
               res.send('false');
             } else {
@@ -113,7 +113,7 @@ module.exports = {
       ],
       statusFunction:
         function(req, res) {
-          fs.readFile('/home/term/.bash_history', 'utf8', function(err, data) {
+          fs.readFile('/home/'+req.user.username+'/.bash_history', 'utf8', function(err, data) {
             if(err){
               res.send('false');
             } else {
