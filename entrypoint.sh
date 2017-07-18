@@ -2,6 +2,6 @@
 set -e
 cmd="$@"
 
-npm install
+#npm install
 
 exec $cmd
