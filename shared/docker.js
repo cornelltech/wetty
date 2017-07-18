@@ -30,7 +30,7 @@ module.exports.sync = function(pool){
 
 function add_user(chapter, username, password){
   var container = docker.getContainer(chapter_containers[chapter])
-  docker_exec(container, ['bash', '-c', 'useradd -d /home/'+username+' -m -s /bin/bash '+username+' && echo '+username+':'+password+' | chpasswd && echo "export PROMPT_COMMAND=\'history -a\'" >> /home/'+username+'/.bashrc && /app/dynamic/setup_user.sh '+username]);
+  docker_exec(container, ['bash', '-c', 'useradd -d /home/'+username+' -m -s /bin/bash '+username+' && echo '+username+':'+password+' | chpasswd && /app/dynamic/setup_user.sh '+username]);
 }
 module.exports.add_user = add_user;
 
