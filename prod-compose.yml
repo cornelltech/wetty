@@ -1,0 +1,41 @@
+version: '3'
+services:
+  quest1:
+    build: 
+      context: ./
+      dockerfile: ./chapters/quest1/Dockerfile
+    ports:
+      - "3000"
+  client_server:
+    build: 
+      context: ./
+      dockerfile: ./chapters/client_server/Dockerfile
+    ports:
+      - "3000"
+
+  nginx:
+    build: ./compose/nginx
+    environment:
+      - MY_DOMAIN_NAME=wetty.cornelltech.io
+    ports:
+      - "0.0.0.0:80:80"
+      - "0.0.0.0:443:443"
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/lib/letsencrypt:/var/lib/letsencrypt
+      - /home/ubuntu/htpasswd:/htpasswd
+
+  certbot:
+    image: quay.io/letsencrypt/letsencrypt
+    depends_on:
+      - nginx
+    command: bash -c "sleep 6 && certbot certonly -n --standalone -d wetty.cornelltech.io --text --agree-tos --email sts59@cornell.edu --server https://acme-v01.api.letsencrypt.org/directory --rsa-key-size 4096 --verbose --keep-until-expiring --standalone-supported-challenges http-01"
+    entrypoint: ""
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/lib/letsencrypt:/var/lib/letsencrypt
+    ports:
+      - "80"
+      - "443"
+    environment:
+      - TERM=xterm
