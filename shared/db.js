@@ -78,19 +78,37 @@ function updateUser(user, newData){
 module.exports.updateUser = updateUser;
 module.exports.addChapter = function(user, chapter){
   getUser(user, function(user_data){
-    user_data.chapters.push(chapter);
+    console.log(user_data.available_chapters);
+    user_data.available_chapters.push(chapter);
     updateUser(user, user_data);
   });
 }
 
 
+function getAllUsers(onSuccess){
+  query("SELECT data FROM users", function(err, res) {
+    if(err) {
+      return console.error('error running query', err);
+    }
+    if(res.rows){
+      onSuccess(res.rows);
+    }else{
+      onSuccess(false);
+    }
+  });
+}
+module.exports.getAllUsers = getAllUsers;
   
 function getUser(user, onSuccess){
   query("SELECT data FROM users WHERE username = $1", [user], function(err, res) {
     if(err) {
       return console.error('error running query', err);
     }
-    onSuccess(res.rows[0].data);
+    if(res.rows[0]){
+      onSuccess(res.rows[0].data);
+    }else{
+      onSuccess(false);
+    }
   });
 }
 module.exports.getUser = getUser;

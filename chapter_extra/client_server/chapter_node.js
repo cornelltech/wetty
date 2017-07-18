@@ -4,7 +4,7 @@ module.exports = {
   chapter_name: "client_server",
   endpoints: function(app){
     app.get('/client_server/games/', function(req, res) {
-      fs.readFile('/var/www/date.txt', 'utf8', function(err, data) {
+      fs.readFile('/tmp/'+req.user.username+'/website/date.txt', 'utf8', function(err, data) {
         if(err){
           res.send('<h1>The Date for our next Hunger games is: </h1>');
         } else {
@@ -15,7 +15,7 @@ module.exports = {
   },
   steps: [
     { 
-      chat: "Welcome back Katniss.  You should have a username and password from our last adventure, if you don't, go back and find them.  We need them to login to this government web server.  We think this might be where they host their website with the dates of the next games.  They have purposly told us the wrong date so that we won't be able to compete.  We must correct this injustice so that us in sector 5 can compete with the rest.  May the odds be ever in your favor.", 
+      chat: "Welcome back {{username}}.  We need them to login to this government web server, use the username and password that you used to sign up for this site.  We think this might be where they host their website with the dates of the next games.  They have purposly told us the wrong date so that we won't be able to compete.  We must correct this injustice so that us in sector 5 can compete with the rest.  May the odds be ever in your favor.", 
       questions: [
         { prompt: "What is a website?", 
           answer: "A website is exactly what we are using right now.  They are always hosted on computers called servers." },
@@ -25,7 +25,7 @@ module.exports = {
       statusFunction: 
         function(req, res) {
 					exec('users', function(error, stdout, stderr) {
-            if( stdout.indexOf("term") === -1){
+            if( stdout.indexOf(req.user.username) === -1){
               res.send("false");
             } else {
               res.send("true");
@@ -45,11 +45,11 @@ module.exports = {
       ], 
       statusFunction: 
         function(req, res) {
-					fs.readFile('/home/term/.bash_history', 'utf8', function(err, data) {
+					fs.readFile('/home/'+req.user.username+'/.bash_history', 'utf8', function(err, data) {
             if(err){
               res.send('false');
             } else {
-              if(data.indexOf("cd /var/www") !== -1){
+              if(data.indexOf("cd /tmp/"+req.user.username+"/website") !== -1){
                 res.send("true");
               } else {
                 res.send('false');
@@ -59,7 +59,7 @@ module.exports = {
         }
     },
     { 
-      chat: "Now first let's see what the website looks like right now.  Please go to <a href='/games/' target='_blank'>games</a>.  What date does it say right now?", 
+      chat: "Now first let's see what the website looks like right now.  Please go to <a href='/client_server/games/' target='_blank'>games</a>.  What date does it say right now?", 
       correct_question: 2,
       questions: [
         { prompt: "I can't get the site to open.", 
@@ -84,7 +84,7 @@ module.exports = {
       ], 
       statusFunction: 
         function(req, res) {
-					fs.readFile('/var/www/date.txt', 'utf8', function(err, data) {
+					fs.readFile('/tmp/'+req.user.username+'/website/date.txt', 'utf8', function(err, data) {
             if(err){
               res.send('false');
             } else {
@@ -98,7 +98,7 @@ module.exports = {
         }
     },
     { 
-      chat: "Now that we've changed the file.  Let's go back to the webpage and see if it looks correct this time.  Remember to refresh it!  Here is the link again <a href='/games/' target='_blank'>games</a>", 
+      chat: "Now that we've changed the file.  Let's go back to the webpage and see if it looks correct this time.  Remember to refresh it!  Here is the link again <a href='/client_server/games/' target='_blank'>games</a>", 
       correct_question: 1,
       questions: [
         { prompt: "How do I refresh a page?", 
@@ -112,7 +112,7 @@ module.exports = {
         }
     },
     { 
-      chat: "Once again great work!  Now everyone will know when the games are and can compete with the rest of the citizens.", 
+      chat: "Once again great work!  Now everyone will know when the games are and can compete with the rest of the citizens.  Click <a href='/home'>here</a> to return to the home page.", 
       questions: [
       ], 
       statusFunction: 

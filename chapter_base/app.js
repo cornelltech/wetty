@@ -8,6 +8,10 @@ var fs = require('fs');
 var exec = require('child_process').exec;
 var chapter = require('../dynamic/chapter_node');
 var exphbs = require('express-handlebars');
+var Handlebars = require('handlebars');
+
+const pool = require('../shared/db');
+const my_session = require('../shared/session');
 
 var opts = require('optimist')
     .options({
@@ -76,20 +80,24 @@ process.on('uncaughtException', function(e) {
     console.error('Error: ' + e);
 });
 
+my_session.setup(pool);
+
 var httpserv;
 
 var app = express();
+my_session.add_session_to_express(app, pool);
+
 app.set('views', path.join(__dirname, 'views'));
-app.engine('handlebars', exphbs({defaultLayout: 'main', layoutsDir: "node/views/layouts/"}));
+app.engine('handlebars', exphbs({defaultLayout: 'main', layoutsDir: "chapter_base/views/layouts/"}));
 app.set('view engine', 'handlebars');
 app.locals.chapter_name = process.env.CHAPTER;
 console.log(process.env.CHAPTER);
 
 var chapter_name = process.env.CHAPTER;
 
-app.get('/' + chapter_name + '/wetty/ssh/:user', function(req, res) {
-    res.sendfile(__dirname + '/public/wetty/index.html');
-});
+//app.get('/' + chapter_name + '/wetty/ssh/:user', function(req, res) {
+//    res.sendfile(__dirname + '/public/wetty/index.html');
+//});
 app.get('/' + chapter_name + '/chapter_frontend.js', function(req, res){
   fs.readFile('/app/dynamic/chapter_frontend.js', 'utf8', function(err, data) {
     if(err){
@@ -116,16 +124,21 @@ app.get('/' + chapter_name + '/status/:index', function(req, res) {
   chapter.steps[req.params["index"]]["statusFunction"](req, res);
   console.log("Getting status of index: " + req.params["index"]);
 });    
+
 app.get('/' + chapter_name + '/chat/:index', function(req, res) {
+  chat_template = Handlebars.compile(chapter.steps[req.params["index"]]["chat"]);
+  question_templates = chapter.steps[req.params['index']]["questions"].map((x) => { return Handlebars.compile(x["prompt"]); });
   res.send({ 
-    chat: chapter.steps[req.params["index"]]["chat"], 
-    questions: chapter.steps[req.params['index']]["questions"].map((x) => { return x["prompt"]; }),
+    chat: chat_template(req.user), 
+    questions: question_templates.map((template) => { return template(req.user); }),
     correct_question: typeof chapter.steps[req.params['index']]["correct_question"] !== "undefined" ? chapter.steps[req.params['index']]["correct_question"]:-1
   });
 });
+
 app.get('/' + chapter_name + '/chat/:index/answer/:question', function(req, res) {
   console.log("responding with answer to index: " + req.params["index"] + " and question: " + req.params["question"]);
-  res.send(chapter.steps[req.params["index"]]["questions"][req.params["question"]]["answer"]);
+  answer_template = Handlebars.compile(chapter.steps[req.params["index"]]["questions"][req.params["question"]]["answer"]);
+  res.send(answer_template(req.user));
 });
 
 // add any endpoints that this chapter might have

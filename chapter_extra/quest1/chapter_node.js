@@ -4,7 +4,7 @@ module.exports = {
   chapter_name: "quest1",
   endpoints: function(app){
     app.get('/quest1/countdown', function(req, res) {
-      fs.readFile('/home/term/countdown.txt', 'utf8', function(err, data) {
+      fs.readFile('/home/'+req.user.username+'/countdown.txt', 'utf8', function(err, data) {
         if(err){
           res.send('file read error!');
         } else {
@@ -13,7 +13,7 @@ module.exports = {
       });
     });
     app.get('/quest1/start_proc', function(req, res) {
-      exec('if ! pidof -x extra_procs.sh >/dev/null; then sudo -H -u term nohup /app/extra_procs.sh & fi', function(err, data) {
+      exec('if ! pidof -x extra_procs.sh >/dev/null; then sudo -H -u '+req.user.username+' nohup /app/extra_procs.sh '+req.user.username+' & fi', function(err, data) {
         if(err){
           res.send(err);
         } else {
@@ -22,7 +22,11 @@ module.exports = {
       });
     });
     app.get('/quest1/status', function(req, res) {
-      fs.readFile('/home/term/countdown.txt', 'utf8', function(err, data) {
+      fs.readFile('/home/'+req.user.username+'/countdown.txt', 'utf8', function(err, data) {
+        if(err){
+          console.log(err);
+          res.send(err);
+        }
         if(data.indexOf("boom!!") !== -1){
           res.send('fail');
         } else {
@@ -39,7 +43,7 @@ module.exports = {
   },
   steps: [
     { 
-      chat: "Hello Katniss.  There is an emergency and we need your help!  Some agents from the Capitol have infected the mainframe computer running the powerplant for all District 12 with a malware. The malware will most likely destroy some files, infect other machines and shuts down the power for all inhabitants of the District.<br><br>According to our intelligence sources, we have less than 5 minutes to deactivate the malware.<br><br>May the odds be ever in your favor!<br><br>Thankfully the agent working for the Capitol was a little sloppy and left some traces behind.  They left some files behind.  Let's see if we can find the footsteps.txt file.  First let's list the files in our current directory with <code>ls</code>.", 
+      chat: "Hello {{username}}.  There is an emergency and we need your help!  Some agents from the Capitol have infected the mainframe computer running the powerplant for all District 12 with a malware. The malware will most likely destroy some files, infect other machines and shuts down the power for all inhabitants of the District.<br><br>According to our intelligence sources, we have less than 5 minutes to deactivate the malware.<br><br>May the odds be ever in your favor!<br><br>Thankfully the agent working for the Capitol was a little sloppy and left some traces behind.  They left some files behind.  Let's see if we can find the footsteps.txt file.  First let's list the files in our current directory with <code>ls</code>.", 
       questions: [
         { prompt: "What is a directory?",
           answer: "A directory contains files and/or directories.  Similar to how a file is a container for data, a directory is a container for files.  Directories make it easier to organize our files." },
@@ -48,7 +52,7 @@ module.exports = {
       ],
       statusFunction:
         function(req, res) {
-          fs.readFile('/home/term/.bash_history', 'utf8', function(err, data) {
+          fs.readFile('/home/'+req.user.username+'/.bash_history', 'utf8', function(err, data) {
             if(err){
               res.send('false');
             } else {
@@ -69,7 +73,7 @@ module.exports = {
       ],
       statusFunction: 
         function(req, res) {
-          fs.readFile('/home/term/.bash_history', 'utf8', function(err, data) {
+          fs.readFile('/home/'+req.user.username+'/.bash_history', 'utf8', function(err, data) {
             if(err){
               res.send('false');
             } else {
@@ -90,7 +94,7 @@ module.exports = {
       ], 
       statusFunction: 
         function(req, res) {
-          fs.readFile('/home/term/.bash_history', 'utf8', function(err, data) {
+          fs.readFile('/home/'+req.user.username+'/.bash_history', 'utf8', function(err, data) {
             if(err){
               res.send('false');
             } else {
@@ -104,7 +108,7 @@ module.exports = {
         }
     },
     {
-      chat: "Great work!!  Our sources told us that they left the command they ran in that file.  But in order to stop the process we need the PID or process ID.  Every process on this mainframe has an ID and we need to find the ID of this one.  Let's list the processes that are running and see if we can find the process.  To list the current processes run this command <code>ps -U term</code>.",
+      chat: "Great work!!  Our sources told us that they left the command they ran in that file.  But in order to stop the process we need the PID or process ID.  Every process on this mainframe has an ID and we need to find the ID of this one.  Let's list the processes that are running and see if we can find the process.  To list the current processes run this command <code>ps -U {{username}}</code>.",
       questions: [
         { prompt: "What is a process?",
           answer: "A process is a running program.  On a phone a process might be an app you have installed or is running.  On this system an example is everytime you run a command, so far they haven't lasted long though."},
@@ -113,11 +117,11 @@ module.exports = {
       ],
       statusFunction:
         function(req, res) {
-          fs.readFile('/home/term/.bash_history', 'utf8', function(err, data) {
+          fs.readFile('/home/'+req.user.username+'/.bash_history', 'utf8', function(err, data) {
             if(err){
               res.send('false');
             } else {
-              if(data.indexOf("ps -U term") !== -1){
+              if(data.indexOf("ps -U "+req.user.username) !== -1){
                 res.send("true");
               } else {
                 res.send('false');
@@ -150,7 +154,7 @@ module.exports = {
         }
     },
     {
-      chat: "Great work!!  It looks like the countdown has stopped!  Thank you so much, now we have electricity.",
+      chat: "Great work!!  It looks like the countdown has stopped!  Thank you so much, now we have electricity. Click <form action=\"/finished\" method='post' id='success_form'><input type='hidden' name='chapter' value='client_server'><a href=\"javascript:{}\" onclick=\"document.getElementById('success_form').submit();\">here</a></form> to continue.",
       questions: [
       ],
       statusFunction:
