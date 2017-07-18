@@ -38,6 +38,8 @@ services:
     build: ./nginx/dev/
     ports:
       - "8000:80"
+    depends_on:
+      - auth
 
   auth:
     build: 

@@ -14,14 +14,13 @@ docker.listContainers(function (err, containers) {
   console.log(chapter_containers);
 });
 
+// sync database and docker containers with user accounts
 module.exports.sync = function(pool){
   pool.getAllUsers(function(rows){
     rows.forEach(function(row){
-      console.log(row.data);
       if(row.data.available_chapters){
-        console.log(row.data.available_chapters);
         row.data.available_chapters.forEach(function(chapter){
-          console.log(chapter, row.data.username, row.data.password);
+          console.log("SYNC  adding user:"+row.data.username+" to chapter:"+chapter);
           add_user(chapter, row.data.username, row.data.password);
         });
       }
@@ -31,11 +30,11 @@ module.exports.sync = function(pool){
 
 function add_user(chapter, username, password){
   var container = docker.getContainer(chapter_containers[chapter])
-  docker_exec(container, ['bash', '-c', 'useradd -d /home/'+username+' -m -s /bin/bash '+username+' && echo '+username+':'+password+' | chpasswd && echo "export PROMPT_COMMAND=\'history -a\'" >> /home/'+username+'/.bashrc'], null);
+  docker_exec(container, ['bash', '-c', 'useradd -d /home/'+username+' -m -s /bin/bash '+username+' && echo '+username+':'+password+' | chpasswd && echo "export PROMPT_COMMAND=\'history -a\'" >> /home/'+username+'/.bashrc && /app/dynamic/setup_user.sh '+username]);
 }
 module.exports.add_user = add_user;
 
-function docker_exec(container, command, second_command){
+function docker_exec(container, command){
   var options = {
     Cmd: command,
     AttachStdout: true,
@@ -48,13 +47,11 @@ function docker_exec(container, command, second_command){
 			console.log(err);
       return;
     }
-    console.log('here');
     exec.start({stdin: true, hijack: true}, function(err, stream) {
       if (err){
         console.log(err);
         return;
       }
-      console.log('there');
       container.modem.demuxStream(stream, process.stdout, process.stderr);
       
       exec.inspect(function(err, data) {
@@ -63,15 +60,7 @@ function docker_exec(container, command, second_command){
           return;
         }
         console.log(data);
-        if(second_command){
-          docker_exec(container, second_command, null);
-        }
       });
     });
   });
 }
-//  docker.getContainer(chapter_containers[chapter]).exec(['echo', 'hello'], {stdout: true}, (err, results) => {
-//    console.log(results);
-//    console.log(results.stdout);
-//  });
-//}
