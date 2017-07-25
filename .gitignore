@@ -21,3 +21,4 @@ authenticator/node_modules/*
 authenticator/package-lock.json
 node/frames.js
 compose/nginx/dhparams.pem
+*.DS_Store
