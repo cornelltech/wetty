@@ -13,12 +13,12 @@ var exphbs        = require('express-handlebars');
 const pool = require('../shared/db');
 const my_session = require('../shared/session');
 const docker = require('../shared/docker');
+const auth = require('../shared/auth');
 
 var port = 8888;
 var httpserv;
 
 my_session.setup(pool);
-docker.sync(pool);
 
 var app = express();
 
@@ -44,7 +44,6 @@ app.get('/home', passport.authenticationMiddleware(), function (req, res) {
 app.post('/finished', passport.authenticationMiddleware(), function(req, res) {
   var chapter = req.body.chapter;
   pool.addChapter(req.user.username, chapter);
-  docker.add_user(chapter, req.user.username, req.user.password);
   res.redirect('/home');
 });
 app.get('/', function(req, res){
@@ -55,11 +54,13 @@ app.get('/signup', function(req, res) {
   res.render('signup');
 });
 app.post('/signup', function(req, res) {
+  var hash = auth.createHash(req.body.password);
   pool.addUser(req.body.username, { 
     username: req.body.username,
-    password: req.body.password,
+    password_hash: hash,
     available_chapters: ["quest1"] });
   docker.add_user('quest1', req.body.username, req.body.password);
+  docker.add_user('client_server', req.body.username, req.body.password);
   res.redirect('/login');
 });
 app.get('/login', function(req, res) {

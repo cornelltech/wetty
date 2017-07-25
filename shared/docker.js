@@ -15,18 +15,19 @@ docker.listContainers(function (err, containers) {
 });
 
 // sync database and docker containers with user accounts
-module.exports.sync = function(pool){
-  pool.getAllUsers(function(rows){
-    rows.forEach(function(row){
-      if(row.data.available_chapters){
-        row.data.available_chapters.forEach(function(chapter){
-          console.log("SYNC  adding user:"+row.data.username+" to chapter:"+chapter);
-          add_user(chapter, row.data.username, row.data.password);
-        });
-      }
-    });
-  });
-}
+// Since we are no longer storing passwords we can't do this anymore
+//module.exports.sync = function(pool){
+//  pool.getAllUsers(function(rows){
+//    rows.forEach(function(row){
+//      if(row.data.available_chapters){
+//        row.data.available_chapters.forEach(function(chapter){
+//          console.log("SYNC  adding user:"+row.data.username+" to chapter:"+chapter);
+//          add_user(chapter, row.data.username, row.data.password);
+//        });
+//      }
+//    });
+//  });
+//}
 
 function add_user(chapter, username, password){
   var container = docker.getContainer(chapter_containers[chapter])

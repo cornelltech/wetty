@@ -4,21 +4,19 @@ var session       = require('express-session');
 var bodyParser    = require('body-parser');
 var cookieParser  = require('cookie-parser');
 var flash         = require('connect-flash');
+var auth          = require('./auth');
 
 module.exports.setup = function (pool) {
   
   passport.use(new LocalStrategy(
     function(username, password, done) {
         pool.getUser(username, function(user){
-          console.log("user: " + username + " and password: " + password);
-          console.log(user);
           if (user == undefined) {
             return done(null, false, { message: 'Incorrect username.' });
           }
-          if (user.password != password) {
+          if (! auth.checkHash(user.password_hash, password)) {
             return done(null, false, { message: 'Incorrect password.' });
           }
-          console.log("should be authenticated");
           return done(null, user);
         });
     }
@@ -30,7 +28,6 @@ module.exports.setup = function (pool) {
   
   passport.deserializeUser(function(username, done) {
       pool.getUser(username, function( data ){
-        console.log(data);
         done(null, data);
       });
   });
@@ -38,9 +35,7 @@ module.exports.setup = function (pool) {
   function authenticationMiddleware () {
     return function (req, res, next) {
   
-      console.log("authenticating...");
       if (req.isAuthenticated()) {
-        console.log('successful auth');
         return next()
       }
       res.redirect('/login')
