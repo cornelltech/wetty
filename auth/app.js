@@ -47,6 +47,9 @@ app.post('/finished', passport.authenticationMiddleware(), function(req, res) {
   docker.add_user(chapter, req.user.username, req.user.password);
   res.redirect('/home');
 });
+app.get('/', function(req, res){
+  res.redirect('/home');
+});
 
 app.get('/signup', function(req, res) {
   res.render('signup');

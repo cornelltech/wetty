@@ -4,8 +4,9 @@ ADD ./ /app
 WORKDIR /app
 RUN apt-get update
 RUN apt-get install -y vim
+RUN npm install
 
 EXPOSE 8888
 
 ENTRYPOINT ["/app/entrypoint.sh"]
-CMD ["node", "app.js"]
+CMD ["node", "auth/app.js"]
