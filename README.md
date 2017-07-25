@@ -8,9 +8,13 @@ Each chapter is run on a separate docker container.  There is also an additional
 
 ### Directory structure
 /shared - code that is shared among all containers and builds
+ 
 /chapter_extra - add on code just for chapters
+ 
 /auth - base code for authenticator
+ 
 /nginx - nginx config code
+ 
 /chapter_base - base code for all chapters
 
 
