@@ -38,17 +38,18 @@ do any additional setup you need.
 
 #### chapter_node.js
 There are several parts to this file:
-##### require anything needed in this file
-##### module.exports
+##### Require 
+You must require any libraries that you need.
+##### Module.exports
 We use the node syntax for including files, so everything that will be used elsewhere should be in the module.exports 
 dictionary.
-##### chapter_name
+##### Chapter_name
 A simple string of the name of this chapter.
-##### endpoints
+##### Endpoints
 This is a function that accepts the application as a parameter.
 This can be used to add new backend endpoint to the app.  You could also get creative and do all sort of stuff,
 this is run when the chapter loads.
-##### steps
+##### Steps
 This is some JSON with the data nessesary for the chat interaction and status functions.  The syntax looks like this:
 ```
 steps: [{
