@@ -42,8 +42,27 @@ module.exports = {
     });
   },
   steps: [
+    {
+      chat: "Hello {{username}}.  There is an emergency and we need your help!  Some agents from the Capitol have infected the mainframe computer running the powerplant for all District 12 with a malware. The malware will most likely destroy some files, infect other machines and shuts down the power for all inhabitants of the District.<br><br>According to our intelligence sources, we have less than 5 minutes to deactivate the malware.<br><br>May the odds be ever in your favor!<br><br> First we need to login to this powerplant server, use the username and password that you used to sign up for this site.",
+      questions: [
+        { prompt: "How do I log in?",
+          answer: "First click on the terminal, the big black box on your screen.  Then you can type your username.  Press enter, then type your password.  The password won't be typed on the screen, to protect it, but don't worry it's getting in there." },
+        { prompt: "Why don't I see my password when I type it?",
+          answer: "The server does that to protect your password from people that might be watching you type.  Don't worry though, it's still being typed in.  Just type it and press enter." }
+      ],
+      statusFunction:
+        function(req, res) {
+          exec('users', function(error, stdout, stderr) {
+            if( stdout.indexOf(req.user.username) === -1){
+              res.send("false");
+            } else {
+              res.send("true");
+            }
+          });
+        }
+    },
     { 
-      chat: "Hello {{username}}.  There is an emergency and we need your help!  Some agents from the Capitol have infected the mainframe computer running the powerplant for all District 12 with a malware. The malware will most likely destroy some files, infect other machines and shuts down the power for all inhabitants of the District.<br><br>According to our intelligence sources, we have less than 5 minutes to deactivate the malware.<br><br>May the odds be ever in your favor!<br><br>Thankfully the agent working for the Capitol was a little sloppy and left some traces behind.  They left some files behind.  Let's see if we can find the footsteps.txt file.  First let's list the files in our current directory with <code>ls</code>.", 
+      chat: "Nice!  It looks like the agent working for the Capitol was a little sloppy and left some traces behind.  They left some files behind.  Let's see if we can find the footsteps.txt file.  First let's list the files in our current directory with <code>ls</code>.", 
       questions: [
         { prompt: "What is a directory?",
           answer: "A directory contains files and/or directories.  Similar to how a file is a container for data, a directory is a container for files.  Directories make it easier to organize our files." },

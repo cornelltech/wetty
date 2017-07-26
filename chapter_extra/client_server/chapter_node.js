@@ -15,7 +15,7 @@ module.exports = {
   },
   steps: [
     { 
-      chat: "Welcome back {{username}}.  We need them to login to this government web server, use the username and password that you used to sign up for this site.  We think this might be where they host their website with the dates of the next games.  They have purposly told us the wrong date so that we won't be able to compete.  We must correct this injustice so that us in sector 5 can compete with the rest.  May the odds be ever in your favor.", 
+      chat: "Welcome back {{username}}.  We have another big problem.  The government has tried to mislead our sector by posting the wrong date for the next games.  We must correct this injustice!  <br><br>First we need to login to this government web server.  The username and password are the same as the last chapter.  We think this might be where they host their website with the dates of the next games.  May the odds be ever in your favor.", 
       questions: [
         { prompt: "What is a website?", 
           answer: "A website is exactly what we are using right now.  They are always hosted on computers called servers." },
