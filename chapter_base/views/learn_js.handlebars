@@ -49,11 +49,13 @@ $(document).ready(function(){
         }, 1000);
       });
       $(this).hide();
+      $("#terminal").focus();
     });
     $("div.text.correct").click(function() {
       iSay($(this).html());
       currentFrame++;
       getNextChat();
+      $("#terminal").focus();
     });
     $(".messages").height("calc(100% - " + $(".bottom_wrapper").outerHeight() + "px - 63px)");
   }
