@@ -1,6 +1,15 @@
 # wetty
 Terminal in browser over http/https. (Ajaxterm/Anyterm alternative, but much better)
 
+## Running locally
+
+Running locally should be pretty easy, just follow these steps.
+1. Install docker and docker_compose.
+2. Run `docker-compose -f dev-compose.yml build`
+3. Run `docker-compose -f dev-compose.yml up`
+4. Make sure psql is installed locally and run ./auth/create_db.sh.  You will also need the postgres password that is in the docker-compose file.
+5. Visit localhost:8000
+
 ## Developing
 
 The code is pretty modular with the idea of making it easy for people to build their own chapters.  
@@ -13,10 +22,9 @@ Each chapter is run on a separate docker container.  There is also an additional
  
 /auth - base code for authenticator
  
-/nginx - nginx config code
- 
 /chapter_base - base code for all chapters
 
+/nginx - nginx config code
 
 ### Creating a new chapter
 
@@ -59,4 +67,21 @@ steps: [{
   }, ...
 ]
 ```
+
+#### chapter_frontend.js
+This is javaScript that is included in the frontend and run on page load, this is where you might use some of the endpoints you added in chapter_node.js.  You can use jQuery and what ever other libraries are currently installed.  You might have to add other libraries if they are needed.  If you don't require any additional frontend code this file should still exist and just have a comment in it.
     
+#### Dockerfile
+This needs a few things and you can add what ever you want to customize the container.
+
+1. FROM node:7.10 - we start all our images from this image
+2. ADD ./ ./app - we need the source code to be mounted at /app
+3. WORKDIR /app - this is where execution should begin from
+4. RUN npm install - need this to install all depends
+5. RUN ln -s /app/chapter_extra/chapter_name /app/dynamic - this is used to load all chapter specific code.
+6. EXPOSE, ENTRYPOINT and CMD - These should probably be the same accross all chapter images, unless you have a good reason to change them.  You can look at another chapter to see the values.
+
+#### setup_user.sh
+This is a simple bash script that is run to setup a new user when they sign up for the site.  It is run with the username as the argument.  eg. `./setup_user.sh bob`.  This is where you can add files to their home directory, or modify their .bashrc file, or what ever you can think of.  It must have executable permissions! And should have `#!/bin/bash` at the top.
+
+
