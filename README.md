@@ -10,6 +10,10 @@ Running locally should be pretty easy, just follow these steps.
 4. Make sure psql is installed locally and run ./auth/create_db.sh.  You will also need the postgres password that is in the docker-compose file.
 5. Visit localhost:8000
 
+### Ubuntu
+
+1. 
+
 ## Developing
 
 The code is pretty modular with the idea of making it easy for people to build their own chapters.  
