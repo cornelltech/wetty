@@ -12,7 +12,56 @@ Running locally should be pretty easy, just follow these steps.
 
 ### Ubuntu
 
-1. 
+1. Install docker.  https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/
+
+In short, this is what I ran.
+```
+sudo apt-get update
+sudo apt-get install \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+sudo apt-get update
+sudo apt-get install docker-ce`
+```
+
+You can test docker with `sudo docker run hello-world`
+
+2. Install docker-compose. https://docs.docker.com/compose/install/
+
+You must run this first command as root.
+```
+curl -L https://github.com/docker/compose/releases/download/1.14.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+```
+
+And test that docker-compose is working with `docker-compose --version`
+
+3. Build all the docker containers.
+```
+cd wetty
+sudo docker-compose -f dev-compose.yml build
+```
+4. Run the containers
+```
+sudo docker-compose -f dev-compose.yml up
+```
+5. In another terminal run database script.  Make sure you have psql installed.  `sudo apt-get install postgresql-client-9.5`
+```
+cd auth
+./create_db.sh
+# enter in the db password, which can be found in dev-compose.yml
+```
+6. Test that it is runing at http://localhost:8000
+
+That's it.  Create an account and try it out!
+
 
 ## Developing
 
