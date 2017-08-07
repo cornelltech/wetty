@@ -1,6 +1,7 @@
 var fs = require('fs');
 var exec = require('child_process').exec;
 module.exports = {
+  chapter_name: "sample",
   endpoints: function(app){
   },
   steps: [
@@ -17,7 +18,7 @@ module.exports = {
       statusFunction: 
         function(req, res) {
           exec('users', function(error, stdout, stderr) {
-            if( stdout.indexOf("term") === -1){
+            if( stdout.indexOf(req.user.username) === -1){
               res.send("false");
             } else {
               res.send("true");
@@ -35,7 +36,7 @@ module.exports = {
       ],
       statusFunction:
         function(req, res) {
-          fs.access('/home/term/temp', fs.constants.F_OK, (err) => {
+          fs.access('/home/'+req.user.username+'/temp', fs.constants.F_OK, (err) => {
             res.send(err ? "false" : "true");
           });
         }
@@ -50,7 +51,7 @@ module.exports = {
       ],
       statusFunction:
         function(req, res) {
-          fs.readFile('/home/term/.bash_history', 'utf8', function(err, data) {
+          fs.readFile('/home/'+req.user.username+'/.bash_history', 'utf8', function(err, data) {
             if(err){
               res.send('false');
             } else {
@@ -73,7 +74,7 @@ module.exports = {
       ],
       statusFunction:
         function(req, res) {
-          fs.readFile('/home/term/temp', 'utf8', function(err, data) {
+          fs.readFile('/home/'+req.user.username+'/temp', 'utf8', function(err, data) {
             if(err){
               res.send("false");
             } else {
@@ -96,7 +97,7 @@ module.exports = {
       ],
       statusFunction:
         function(req, res) {
-          fs.readFile('/home/term/.bash_history', 'utf8', function(err, data) {
+          fs.readFile('/home/'+req.user.username+'/.bash_history', 'utf8', function(err, data) {
             if(err){
               res.send('false');
             } else {
@@ -110,7 +111,7 @@ module.exports = {
         }
     },
     {
-      chat: "Congratulations, you have completed the first chapter!",
+      chat: "Congratulations, you have completed the last chapter! <a href='/home'>Return home</a>",
       questions: [
         { prompt: "What do I do now?",
           answer: "Now you must wait for us to build the next chapter." },

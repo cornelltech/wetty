@@ -9,3 +9,4 @@ psql -h 127.0.0.1 -U postgres wetty -c "CREATE TABLE users ( username varchar(40
 psql -h 127.0.0.1 -U postgres wetty -c "CREATE TABLE chapters ( name varchar(40) PRIMARY KEY, data json )"
 psql -h 127.0.0.1 -U postgres wetty -c "INSERT INTO chapters VALUES ('quest1', '{ \"hello\": \"some stuff\"}')"
 psql -h 127.0.0.1 -U postgres wetty -c "INSERT INTO chapters VALUES ('client_server', '{ \"hello\": \"some stuff\"}')"
+psql -h 127.0.0.1 -U postgres wetty -c "INSERT INTO chapters VALUES ('sample', '{ \"hello\": \"some stuff\"}')"

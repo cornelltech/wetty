@@ -112,7 +112,7 @@ module.exports = {
         }
     },
     { 
-      chat: "Once again great work!  Now everyone will know when the games are and can compete with the rest of the citizens.  Click <a href='/home'>here</a> to return to the home page.", 
+      chat: "Once again great work!  Now everyone will know when the games are and can compete with the rest of the citizens.  Click <form action=\"/finished\" method='post' id='success_form'><input type='hidden' name='chapter' value='sample'><a href=\"javascript:{}\" onclick=\"document.getElementById('success_form').submit();\">here</a></form> to return to the home page.", 
       questions: [
       ], 
       statusFunction: 

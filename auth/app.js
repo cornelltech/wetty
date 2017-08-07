@@ -61,6 +61,7 @@ app.post('/signup', function(req, res) {
     available_chapters: ["quest1"] });
   docker.add_user('quest1', req.body.username, req.body.password);
   docker.add_user('client_server', req.body.username, req.body.password);
+  docker.add_user('sample', req.body.username, req.body.password);
   res.redirect('/login');
 });
 app.get('/login', function(req, res) {

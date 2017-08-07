@@ -1,5 +1,22 @@
 version: '3'
 services:
+  sample:
+    build: 
+      context: ./
+      dockerfile: ./chapter_extra/sample/Dockerfile
+    ports:
+      - "3000"
+    command: ["./start_app.sh"]
+    volumes:
+      - ./chapter_base:/app/chapter_base
+      - ./chapter_extra:/app/chapter_extra
+      - ./shared:/app/shared
+    environment:
+      CHAPTER: "sample"
+      APP: chapter_base/app.js
+    labels:
+      wetty.chapter: "sample"
+
   quest1:
     build: 
       context: ./
