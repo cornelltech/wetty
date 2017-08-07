@@ -85,4 +85,12 @@ This needs a few things and you can add what ever you want to customize the cont
 #### setup_user.sh
 This is a simple bash script that is run to setup a new user when they sign up for the site.  It is run with the username as the argument.  eg. `./setup_user.sh bob`.  This is where you can add files to their home directory, or modify their .bashrc file, or what ever you can think of.  It must have executable permissions! And should have `#!/bin/bash` at the top.
 
-
+### Steps to create a new chapter
+1. Create the folder and files that are described above.
+2. Add your chapter to dev-compose.yml, by mostly copying one of the other chapters.  Don't forget to set both the env var CHAPTER and the label wetty.chapter.  And change the dockerfile location.
+3. Add the upstream to nginx.  For dev we'll edit nginx/dev/dev-nginx.conf.  Add a new upstream and a new location that points to the new upstream.
+4. Modify the previous chapter with a link to enable this chapter.  You can copy the form from any other chapter that has a link to enable another chapter at the end.  All you need to change is the value of the input with name='chapter'.  The value should be the name of the new chapter.
+5. Build and run all the containers with `docker-compose -f dev-compose.yml build` and `docker-compose -f dev-compose.yml up`.
+6. Add this chapter to the database.  Just change the chapter_name in this command.  And add it to auth/create_db.sh for the next db setup.  `psql -h 127.0.0.1 -U postgres wetty -c "INSERT INTO chapters VALUES ('chapter_name', '{ \"hello\": \"some stuff\"}')"`
+7. Add a line to auth/app.js the post('/signup') endpoint to add users when a new user signs up.  Around line 63 `  docker.add_user('sample', req.body.username, req.body.password);` where sample is the name of the chapter.
+8. Finally create a new user and see if your chapter works correctly.
