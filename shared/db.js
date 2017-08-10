@@ -1,5 +1,5 @@
-const pg = require('pg');
-var session       = require('express-session');
+const pg      = require('pg');
+var session   = require('express-session');
 var pgSession = require('connect-pg-simple')(session);
 
 // create a config to configure both pooling behavior
