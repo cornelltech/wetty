@@ -9,6 +9,7 @@ var exec = require('child_process').exec;
 var chapter = require('../dynamic/chapter_node');
 var exphbs = require('express-handlebars');
 var Handlebars = require('handlebars');
+var exJwt         = require('express-jwt');
 
 const pool = require('../shared/db');
 const my_session = require('../shared/session');
@@ -134,6 +135,24 @@ app.get('/' + chapter_name + '/chat/:index', function(req, res) {
     correct_question: typeof chapter.steps[req.params['index']]["correct_question"] !== "undefined" ? chapter.steps[req.params['index']]["correct_question"]:-1
   });
 });
+app.get('/' + chapter_name + '/api/chat/:index', exJwt({ secret: "something_very_secret", userProperty: 'payload' }), function(req, res) {
+  chat_template = Handlebars.compile(chapter.steps[req.params["index"]]["chat"]);
+  question_templates = chapter.steps[req.params['index']]["questions"].map((x) => { return Handlebars.compile(x["prompt"]); });
+  res.send({ 
+    chat: chat_template(req.user), 
+    questions: question_templates.map((template) => { return template(req.user); }),
+    correct_question: typeof chapter.steps[req.params['index']]["correct_question"] !== "undefined" ? chapter.steps[req.params['index']]["correct_question"]:-1
+  });
+});
+app.get('/' + chapter_name + '/api/chat/:index/answer/:question', exJwt({ secret: "something_very_secret", userProperty: 'payload' }), function(req, res) {
+  console.log("responding with answer to index: " + req.params["index"] + " and question: " + req.params["question"]);
+  answer_template = Handlebars.compile(chapter.steps[req.params["index"]]["questions"][req.params["question"]]["answer"]);
+  res.send({chat:answer_template(req.user)});
+});
+app.get('/' + chapter_name + '/api/status/:index', exJwt({ secret: "something_very_secret", userProperty: 'payload' }), function(req, res) {
+  chapter.steps[req.params["index"]]["statusFunction"](req, res);
+  console.log("Getting status of index: " + req.params["index"]);
+});    
 
 app.get('/' + chapter_name + '/chat/:index/answer/:question', function(req, res) {
   console.log("responding with answer to index: " + req.params["index"] + " and question: " + req.params["question"]);

@@ -4,7 +4,7 @@ module.exports = {
   chapter_name: "quest1",
   endpoints: function(app){
     app.get('/quest1/countdown', function(req, res) {
-      fs.readFile('/home/'+req.user.username+'/countdown.txt', 'utf8', function(err, data) {
+      fs.readFile('/home/'+req.payload.user.username+'/countdown.txt', 'utf8', function(err, data) {
         if(err){
           res.send('file read error!');
         } else {
@@ -13,16 +13,16 @@ module.exports = {
       });
     });
     app.get('/quest1/start_proc', function(req, res) {
-      exec('if ! pidof -x extra_procs.sh >/dev/null; then sudo -H -u '+req.user.username+' nohup /app/extra_procs.sh '+req.user.username+' & fi', function(err, data) {
+      exec('if ! pidof -x extra_procs.sh >/dev/null; then sudo -H -u '+req.payload.user.username+' nohup /app/extra_procs.sh '+req.payload.user.username+' & fi', function(err, data) {
         if(err){
           res.send(err);
         } else {
-          res.send('true');
+          res.send({status:true});
         }
       });
     });
     app.get('/quest1/status', function(req, res) {
-      fs.readFile('/home/'+req.user.username+'/countdown.txt', 'utf8', function(err, data) {
+      fs.readFile('/home/'+req.payload.user.username+'/countdown.txt', 'utf8', function(err, data) {
         if(err){
           console.log(err);
           res.send(err);
@@ -53,10 +53,10 @@ module.exports = {
       statusFunction:
         function(req, res) {
           exec('users', function(error, stdout, stderr) {
-            if( stdout.indexOf(req.user.username) === -1){
-              res.send("false");
+            if( stdout.indexOf(req.payload.user.username) === -1){
+              res.send({status:false});
             } else {
-              res.send("true");
+              res.send({status:true});
             }
           });
         }
@@ -71,14 +71,14 @@ module.exports = {
       ],
       statusFunction:
         function(req, res) {
-          fs.readFile('/home/'+req.user.username+'/.bash_history', 'utf8', function(err, data) {
+          fs.readFile('/home/'+req.payload.user.username+'/.bash_history', 'utf8', function(err, data) {
             if(err){
-              res.send('false');
+              res.send({status:false});
             } else {
               if(data.indexOf("ls") !== -1){
-                res.send('true');
+                res.send({status:true});
               } else {
-                res.send('false');
+                res.send({status:false});
               }
             }
           });
@@ -92,14 +92,14 @@ module.exports = {
       ],
       statusFunction: 
         function(req, res) {
-          fs.readFile('/home/'+req.user.username+'/.bash_history', 'utf8', function(err, data) {
+          fs.readFile('/home/'+req.payload.user.username+'/.bash_history', 'utf8', function(err, data) {
             if(err){
-              res.send('false');
+              res.send({status:false});
             } else {
               if(data.indexOf("ls files") !== -1){
-                res.send("true");
+                res.send({status:true});
               } else {
-                res.send('false');
+                res.send({status:false});
               }
             }
           });
@@ -113,14 +113,14 @@ module.exports = {
       ], 
       statusFunction: 
         function(req, res) {
-          fs.readFile('/home/'+req.user.username+'/.bash_history', 'utf8', function(err, data) {
+          fs.readFile('/home/'+req.payload.user.username+'/.bash_history', 'utf8', function(err, data) {
             if(err){
-              res.send('false');
+              res.send({status:false});
             } else {
               if(data.indexOf("cat files/footsteps.txt") !== -1){
-                res.send("true");
+                res.send({status:true});
               } else {
-                res.send('false');
+                res.send({status:false});
               }
             }
           });
@@ -136,14 +136,14 @@ module.exports = {
       ],
       statusFunction:
         function(req, res) {
-          fs.readFile('/home/'+req.user.username+'/.bash_history', 'utf8', function(err, data) {
+          fs.readFile('/home/'+req.payload.user.username+'/.bash_history', 'utf8', function(err, data) {
             if(err){
-              res.send('false');
+              res.send({status:false});
             } else {
-              if(data.indexOf("ps -U "+req.user.username) !== -1){
-                res.send("true");
+              if(data.indexOf("ps -U "+req.payload.user.username) !== -1){
+                res.send({status:true});
               } else {
-                res.send('false');
+                res.send({status:false});
               }
             }
           });
@@ -161,12 +161,12 @@ module.exports = {
         function(req, res) {
           exec('ps -ef', function(err, data) {
             if(err){
-              res.send('false');
+              res.send({status:false});
             } else {
               if(data.indexOf("/app/extra_procs.sh") !== -1){
-                res.send("false");
+                res.send({status:false});
               } else {
-                res.send('true');
+                res.send({status:true});
               }
             }
           });
@@ -178,7 +178,7 @@ module.exports = {
       ],
       statusFunction:
         function(req, res) {
-          res.send("false");
+          res.send({status:false});
         }
     }
   ]
