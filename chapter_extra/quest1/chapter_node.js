@@ -1,18 +1,19 @@
 var fs = require('fs');
 var exec = require('child_process').exec;
+var exJwt         = require('express-jwt');
 module.exports = {
   chapter_name: "quest1",
   endpoints: function(app){
-    app.get('/quest1/countdown', function(req, res) {
+    app.get('/quest1/api/countdown', exJwt({ secret: "something_very_secret", userProperty: 'payload' }), function(req, res) {
       fs.readFile('/home/'+req.payload.user.username+'/countdown.txt', 'utf8', function(err, data) {
         if(err){
           res.send('file read error!');
         } else {
-          res.send(data);
+          res.send({data: data});
         }
       });
     });
-    app.get('/quest1/start_proc', function(req, res) {
+    app.get('/quest1/api/start_proc', exJwt({ secret: "something_very_secret", userProperty: 'payload' }), function(req, res) {
       exec('if ! pidof -x extra_procs.sh >/dev/null; then sudo -H -u '+req.payload.user.username+' nohup /app/extra_procs.sh '+req.payload.user.username+' & fi', function(err, data) {
         if(err){
           res.send(err);
@@ -21,20 +22,20 @@ module.exports = {
         }
       });
     });
-    app.get('/quest1/status', function(req, res) {
+    app.get('/quest1/api/status', exJwt({ secret: "something_very_secret", userProperty: 'payload' }), function(req, res) {
       fs.readFile('/home/'+req.payload.user.username+'/countdown.txt', 'utf8', function(err, data) {
         if(err){
           console.log(err);
           res.send(err);
         }
         if(data.indexOf("boom!!") !== -1){
-          res.send('fail');
+          res.send({data: 'fail'});
         } else {
           exec('pidof -x extra_procs.sh', function(err, data) {
             if(data === ''){
-              res.send('success');
+              res.send({data: 'success'});
             } else {
-              res.send('continue');
+              res.send({data: 'continue'});
             }
           });
         }

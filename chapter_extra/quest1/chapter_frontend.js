@@ -1,29 +1,36 @@
-    $.get("/quest1/start_proc", {}, function(data){
-    });
-    function checkCountdown() {
-      $.get("/quest1/countdown", {}, function(data){
-        $(".status").html("<h1><small>countdown: </small>" + data + "</h1>");
-      });
-    }
+    //$.get("/quest1/start_proc", {}, function(data){
+    //});
+    self.authService.makeAuthGetRequest("http://localhost:8000/quest1/api/start_proc").subscribe();
     var checkQuestStatusID;
     var checkCountdownID;
+    function checkCountdown(){
+      self.authService.makeAuthGetRequest("http://localhost:8000/quest1/api/countdown").subscribe( data => {
+        self.statusHtml = "<h1><small>countdown: </small>" + data.data + "</h1>";
+      });
+    }
     function checkQuestStatus() {
-      $.get("/quest1/status", {}, function(data){
-        if(data != 'continue'){
-          if(data == 'fail'){
+      self.authService.makeAuthGetRequest("http://localhost:8000/quest1/api/status").subscribe( data => {
+        if(data.data != 'continue'){
+          if(data.data == 'fail'){
             clearInterval(checkCountdownID);
-            $(".status").html('<iframe src="https://giphy.com/embed/13d2jHlSlxklVe" width="480" height="318" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/reaction-explosion-government-13d2jHlSlxklVe">via GIPHY</a></p>');
+            self.statusHtml = '<iframe src="https://giphy.com/embed/13d2jHlSlxklVe" width="480" height="300" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>';
             clearInterval(checkQuestStatusID);
-            theySay("Oh Nooooo!  We ran out of time!");
           } 
-          if(data == 'success'){
+          if(data.data == 'success'){
             clearInterval(checkCountdownID);
-            $(".status").html('<iframe src="https://giphy.com/embed/eoxomXXVL2S0E" width="480" height="360" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/internet-eoxomXXVL2S0E">via GIPHY</a></p>');
+            self.statusHtml = '<iframe src="https://giphy.com/embed/eoxomXXVL2S0E" width="480" height="300" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>';
             clearInterval(checkQuestStatusID);
-            theySay("Great work!!  We have saved the sector from loosing power!");
           }
         }
       });
     }
     checkCountdownID = setInterval(checkCountdown, 1000);
     checkQuestStatusID = setInterval(checkQuestStatus, 1000);
+        
+    /*
+    function checkCountdown() {
+      $.get("/quest1/countdown", {}, function(data){
+        $(".status").html("<h1><small>countdown: </small>" + data + "</h1>");
+      });
+    }
+    */

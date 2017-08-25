@@ -11,6 +11,8 @@ var exphbs = require('express-handlebars');
 var Handlebars = require('handlebars');
 var exJwt         = require('express-jwt');
 
+var socketioJwt = require("socketio-jwt");
+
 const pool = require('../shared/db');
 const my_session = require('../shared/session');
 
@@ -107,6 +109,14 @@ app.get('/' + chapter_name + '/chapter_frontend.js', function(req, res){
     res.send(data);
   });
 });
+app.get('/' + chapter_name + '/api/chapter_frontend.js', exJwt({ secret: "something_very_secret", userProperty: 'payload' }), function(req, res){
+  fs.readFile('/app/dynamic/chapter_frontend.js', 'utf8', function(err, data) {
+    if(err){
+      res.send(err);
+    }
+    res.send({code: data});
+  });
+});
 
 
 app.get('/' + chapter_name + '/', function(req, res){
@@ -139,15 +149,15 @@ app.get('/' + chapter_name + '/api/chat/:index', exJwt({ secret: "something_very
   chat_template = Handlebars.compile(chapter.steps[req.params["index"]]["chat"]);
   question_templates = chapter.steps[req.params['index']]["questions"].map((x) => { return Handlebars.compile(x["prompt"]); });
   res.send({ 
-    chat: chat_template(req.user), 
-    questions: question_templates.map((template) => { return template(req.user); }),
+    chat: chat_template(req.payload.user), 
+    questions: question_templates.map((template) => { return template(req.payload.user); }),
     correct_question: typeof chapter.steps[req.params['index']]["correct_question"] !== "undefined" ? chapter.steps[req.params['index']]["correct_question"]:-1
   });
 });
 app.get('/' + chapter_name + '/api/chat/:index/answer/:question', exJwt({ secret: "something_very_secret", userProperty: 'payload' }), function(req, res) {
   console.log("responding with answer to index: " + req.params["index"] + " and question: " + req.params["question"]);
   answer_template = Handlebars.compile(chapter.steps[req.params["index"]]["questions"][req.params["question"]]["answer"]);
-  res.send({chat:answer_template(req.user)});
+  res.send({chat:answer_template(req.payload.user)});
 });
 app.get('/' + chapter_name + '/api/status/:index', exJwt({ secret: "something_very_secret", userProperty: 'payload' }), function(req, res) {
   chapter.steps[req.params["index"]]["statusFunction"](req, res);
@@ -175,6 +185,18 @@ if (runhttps) {
 }
 
 var io = server(httpserv,{path: '/' + chapter_name + '/wetty/socket.io'});
+
+io.use(socketioJwt.authorize({
+  secret: 'something_very_secret',
+  handshake: true
+}));
+
+//io.on('connection', function (socket) {
+//  // in socket.io 1.0
+//  console.log('hello! ', socket.decoded_token.user);
+//})
+
+
 io.on('connection', function(socket){
     var sshuser = '';
     var request = socket.request;
@@ -201,18 +223,20 @@ io.on('connection', function(socket){
     }
     console.log((new Date()) + " PID=" + term.pid + " STARTED on behalf of user=" + sshuser)
     term.on('data', function(data) {
-        socket.emit('output', data);
+    //  console.log("data:"+data);
+      socket.emit('output', data);
     });
     term.on('exit', function(code) {
-        console.log((new Date()) + " PID=" + term.pid + " ENDED")
+      console.log((new Date()) + " PID=" + term.pid + " ENDED")
     });
     socket.on('resize', function(data) {
-        term.resize(data.col, data.row);
+      term.resize(data.col, data.row);
     });
     socket.on('input', function(data) {
-        term.write(data);
+    //  console.log("input: " + data);
+      term.write(data);
     });
     socket.on('disconnect', function() {
-        term.end();
+      term.end();
     });
 })
