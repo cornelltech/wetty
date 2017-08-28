@@ -10,7 +10,6 @@ var flash         = require('connect-flash');
 var exphbs        = require('express-handlebars');
 var exJwt         = require('express-jwt');
 
-
 const pool = require('../shared/db');
 const my_session = require('../shared/session');
 const docker = require('../shared/docker');
@@ -46,6 +45,24 @@ app.post('/finished', function(req, res) {
   var chapter = req.body.chapter;
   pool.addChapter(req.user.username, chapter);
   res.redirect('/home');
+});
+app.post('/api/completeChapter', exJwt({ secret: "something_very_secret", userProperty: 'payload' }), function(req, res) {
+  var chapter = req.body.chapter;
+  pool.getChapters(function(data) {
+    for(let i=0; i<data.length; i++){
+      if(data[i] === chapter){
+        if(data[i+1]){
+          pool.addChapter(req.payload.user.username, data[i+1]);
+          res.json({status: true, chapter_enabled: data[i+1]});
+          return;
+        } else {
+          res.json({status: false, message:"No more chapters to enable, this was the last."});
+          return;
+        }
+      }
+    }
+    res.json({status:false, message:`unable to find chapter ${chapter}`});
+  });
 });
 app.get('/', function(req, res){
   res.redirect('/home');
@@ -108,6 +125,15 @@ app.get('/api/chapters', exJwt({ secret: "something_very_secret", userProperty: 
   console.log(req.payload.user);
   pool.getChapters(function(data) {
     res.json(data);
+  });
+});
+app.get('/api/genJwt', exJwt({ secret: "something_very_secret", userProperty: 'payload' }), function(req, res) {
+  pool.getUser(req.payload.user.username, data => {
+    token = auth.generateJwt(data);
+    res.status(200);
+    res.json({
+      "token" : token
+    });
   });
 });
 app.post('/api/login', function(req, res){

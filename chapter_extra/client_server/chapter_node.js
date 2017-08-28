@@ -3,8 +3,8 @@ var exec = require('child_process').exec;
 module.exports = {
   chapter_name: "client_server",
   endpoints: function(app){
-    app.get('/client_server/games/', function(req, res) {
-      fs.readFile('/tmp/'+req.user.username+'/website/date.txt', 'utf8', function(err, data) {
+    app.get('/client_server/:reqUsername/games/', function(req, res) {
+      fs.readFile('/tmp/'+req.params["reqUsername"]+'/website/date.txt', 'utf8', function(err, data) {
         if(err){
           res.send('<h1>The Date for our next Hunger games is: </h1>');
         } else {
@@ -25,10 +25,10 @@ module.exports = {
       statusFunction: 
         function(req, res) {
 					exec('users', function(error, stdout, stderr) {
-            if( stdout.indexOf(req.user.username) === -1){
-              res.send("false");
+            if( stdout.indexOf(req.payload.user.username) === -1){
+              res.send({status:false});
             } else {
-              res.send("true");
+              res.send({status:true});
             }
           });
         }
@@ -45,21 +45,21 @@ module.exports = {
       ], 
       statusFunction: 
         function(req, res) {
-					fs.readFile('/home/'+req.user.username+'/.bash_history', 'utf8', function(err, data) {
+					fs.readFile('/home/'+req.payload.user.username+'/.bash_history', 'utf8', function(err, data) {
             if(err){
-              res.send('false');
+              res.send({status:false});
             } else {
-              if(data.indexOf("cd /tmp/"+req.user.username+"/website") !== -1){
-                res.send("true");
+              if(data.indexOf("cd /tmp/"+req.payload.user.username+"/website") !== -1){
+                res.send({status:true});
               } else {
-                res.send('false');
+                res.send({status:false});
               }
             }
           });
         }
     },
     { 
-      chat: "Now first let's see what the website looks like right now.  Please go to <a href='/client_server/games/' target='_blank'>games</a>.  What date does it say right now?", 
+      chat: "Now first let's see what the website looks like right now.  Please go to <a href='http://localhost:8000/client_server/{{username}}/games/' target='_blank'>games</a>.  What date does it say right now?", 
       correct_question: 2,
       questions: [
         { prompt: "I can't get the site to open.", 
@@ -71,7 +71,7 @@ module.exports = {
       ], 
       statusFunction: 
         function(req, res) {
-          res.send('false');
+          res.send({status:false});
         }
     },
     { 
@@ -84,21 +84,21 @@ module.exports = {
       ], 
       statusFunction: 
         function(req, res) {
-					fs.readFile('/tmp/'+req.user.username+'/website/date.txt', 'utf8', function(err, data) {
+					fs.readFile('/tmp/'+req.payload.user.username+'/website/date.txt', 'utf8', function(err, data) {
             if(err){
-              res.send('false');
+              res.send({status:false});
             } else {
               if(data.indexOf("August 12, 2017") !== -1){
-                res.send("true");
+                res.send({status:true});
               } else {
-                res.send('false');
+                res.send({status:false});
               }
             }
           });
         }
     },
     { 
-      chat: "Now that we've changed the file.  Let's go back to the webpage and see if it looks correct this time.  Remember to refresh it!  Here is the link again <a href='/client_server/games/' target='_blank'>games</a>", 
+      chat: "Now that we've changed the file.  Let's go back to the webpage and see if it looks correct this time.  Remember to refresh it!  Here is the link again <a href='http://localhost:8000/client_server/{{username}}/games/' target='_blank'>games</a>", 
       correct_question: 1,
       questions: [
         { prompt: "How do I refresh a page?", 
@@ -108,16 +108,16 @@ module.exports = {
       ], 
       statusFunction: 
         function(req, res) {
-          res.send("false");
+          res.send({status:false});
         }
     },
     { 
-      chat: "Once again great work!  Now everyone will know when the games are and can compete with the rest of the citizens.  Click <form action=\"/finished\" method='post' id='success_form'><input type='hidden' name='chapter' value='sample'><a href=\"javascript:{}\" onclick=\"document.getElementById('success_form').submit();\">here</a></form> to return to the home page.", 
+      chat: "Once again great work!  Now everyone will know when the games are and can compete with the rest of the citizens.  Click <a href=\"javascript:{}\" onclick=\"document.getElementById('success_form').submit();\">here</a></form> to return to the home page.", 
       questions: [
       ], 
       statusFunction: 
         function(req, res) {
-          res.send("false");
+          res.send({status:false});
         }
     }
   ]
