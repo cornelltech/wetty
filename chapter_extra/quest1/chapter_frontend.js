@@ -3,6 +3,7 @@
     self.authService.makeAuthGetRequest("http://localhost:8000/quest1/api/start_proc").subscribe();
     var checkQuestStatusID;
     var checkCountdownID;
+
     function checkCountdown(){
       self.authService.makeAuthGetRequest("http://localhost:8000/quest1/api/countdown").subscribe( data => {
         self.statusHtml = "<h1><small>countdown: </small>" + data.data + "</h1>";
@@ -26,6 +27,12 @@
     }
     checkCountdownID = setInterval(checkCountdown, 1000);
     checkQuestStatusID = setInterval(checkQuestStatus, 1000);
+
+    self.clearAllIntervals = function() {
+      console.log("stop intervals!!");
+      clearInterval(checkQuestStatusID);            
+      clearInterval(checkCountdownID);
+    }
         
     /*
     function checkCountdown() {
